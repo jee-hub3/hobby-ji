@@ -1,0 +1,27 @@
+{
+  "name": "claude-usage-widget",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Claude 사용량(세션/주간)을 항상 화면에 띄워놓는 데스크톱 위젯",
+  "main": "src/main/index.js",
+  "author": "jee-hub3",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jee-hub3/hobby-ji.git"
+  },
+  "homepage": "https://github.com/jee-hub3/hobby-ji#readme",
+  "scripts": {
+    "start": "node node_modules/electron/cli.js .",
+    "verify": "node scripts/verify-usage.js",
+    "build": "node node_modules/electron-builder/out/cli/cli.js"
+  },
+  "devDependencies": {
+    "electron": "^43.1.0",
+    "electron-builder": "^26.15.3",
+    "png-to-ico": "^3.0.2"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0"
+  }
+}

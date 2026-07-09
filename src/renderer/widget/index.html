@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'" />
+    <title>Claude Usage Widget</title>
+    <link rel="stylesheet" href="widget.css" />
+  </head>
+  <body>
+    <div id="widget" class="widget">
+      <div class="header">
+        <span class="dot" id="status-dot"></span>
+        <span class="title">Claude</span>
+        <span class="updated" id="updated">-- 갱신</span>
+      </div>
+
+      <div id="content">
+        <div class="row">
+          <span class="label">세션</span>
+          <div class="bar-track"><div class="bar-fill" id="session-fill"></div></div>
+          <span class="percent" id="session-percent">--%</span>
+        </div>
+        <div class="sub" id="session-reset">-</div>
+
+        <div class="row">
+          <span class="label">주간</span>
+          <div class="bar-track"><div class="bar-fill" id="weekly-fill"></div></div>
+          <span class="percent" id="weekly-percent">--%</span>
+        </div>
+        <div class="sub" id="weekly-reset">-</div>
+
+        <div class="sub" id="scoped-line" hidden></div>
+      </div>
+
+      <div class="message" id="message" hidden></div>
+    </div>
+    <script src="../shared/presets.js"></script>
+    <script src="widget.js"></script>
+  </body>
+</html>

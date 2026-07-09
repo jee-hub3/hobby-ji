@@ -1,0 +1,22 @@
+appId: com.jee-hub3.claude-usage-widget
+productName: Claude Usage Widget
+directories:
+  output: dist
+files:
+  - src/**/*
+  - assets/**/*
+  - package.json
+  - "!node_modules/electron-builder"
+  - "!node_modules/png-to-ico"
+win:
+  target:
+    - nsis
+    - portable
+  icon: assets/icon.ico
+nsis:
+  oneClick: true
+  deleteAppDataOnUninstall: false
+publish:
+  provider: github
+  owner: jee-hub3
+  repo: hobby-ji
