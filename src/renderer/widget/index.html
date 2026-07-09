@@ -32,7 +32,13 @@
         <div class="sub" id="scoped-line" hidden></div>
       </div>
 
-      <div class="message" id="message" hidden></div>
+      <div class="message" id="message" hidden>
+        <div class="msg-text" id="msg-text"></div>
+        <div class="msg-actions" id="msg-actions" hidden>
+          <button type="button" class="msg-btn primary" id="btn-help">설치·로그인 안내</button>
+          <button type="button" class="msg-btn" id="btn-retry">다시 시도</button>
+        </div>
+      </div>
     </div>
     <script src="../shared/presets.js"></script>
     <script src="widget.js"></script>

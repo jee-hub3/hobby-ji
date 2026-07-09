@@ -11,6 +11,10 @@ contextBridge.exposeInMainWorld("claudeUsage", {
   requestContextMenu: () => ipcRenderer.send("widget:context-menu"),
   reportSize: (size) => ipcRenderer.send("widget:resize", size),
 
+  // 온보딩 버튼: 액션 id만 전달(임의 URL 금지). main이 id→동작을 매핑한다.
+  onboardingAction: (id) => ipcRenderer.send("onboarding:action", id),
+
+  getAppInfo: () => ipcRenderer.invoke("app:info"),
   getSettings: () => ipcRenderer.invoke("settings:get"),
   setSettings: (partial) => ipcRenderer.send("settings:set", partial),
   onSettingsUpdate: (callback) => {

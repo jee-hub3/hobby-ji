@@ -1,4 +1,4 @@
-const { app, ipcMain, Menu, Notification } = require("electron");
+const { app, ipcMain, Menu, Notification, shell, dialog } = require("electron");
 const { createWidgetWindow, createSettingsWindow, resizeWidget } = require("./windows");
 const { createTray } = require("./tray");
 const Poller = require("./poller");
@@ -8,6 +8,22 @@ let widgetWin;
 let settingsWin = null;
 let tray;
 let poller;
+
+// 자동시작은 "설치본"에서만 의미가 있다. portable exe는 매 실행마다 임시폴더에
+// 압축 해제되므로(execPath가 계속 바뀜) 로그인 항목을 등록하면 다음 부팅 때 깨진다.
+// dev(electron .)도 자동시작 대상이 아니다.
+function canAutoStart() {
+  return app.isPackaged && !process.env.PORTABLE_EXECUTABLE_FILE;
+}
+
+function applyAutoStart(enable) {
+  if (canAutoStart()) {
+    app.setLoginItemSettings({ openAtLogin: enable, path: process.execPath });
+  } else {
+    // portable/dev: 임시 경로를 등록하지 않고, 남아있을 수 있는 항목은 해제
+    app.setLoginItemSettings({ openAtLogin: false });
+  }
+}
 
 const notifyLevel = { session: "normal", weekly: "normal" };
 const LEVEL_RANK = { normal: 0, warn: 1, danger: 2 };
@@ -61,8 +77,24 @@ function toggleWidgetVisibility() {
 app.whenReady().then(() => {
   widgetWin = createWidgetWindow();
 
-  const initialSettings = settings.getAll();
-  app.setLoginItemSettings({ openAtLogin: initialSettings.behavior.autoStart });
+  let initialSettings = settings.getAll();
+
+  // 첫 실행(설치본에서만) — 자동 시작 여부를 한 번 물어본다.
+  if (canAutoStart() && !initialSettings.autoStartPrompted) {
+    const res = dialog.showMessageBoxSync({
+      type: "question",
+      buttons: ["예, 자동 시작", "아니요"],
+      defaultId: 0,
+      cancelId: 1,
+      title: "Claude Usage Widget",
+      message: "Windows 시작 시 위젯을 자동으로 실행할까요?",
+      detail: "항상 화면에 사용량을 띄워두려면 자동 시작을 권장합니다.\n나중에 설정 > 동작에서 바꿀 수 있어요.",
+    });
+    settings.update({ behavior: { autoStart: res === 0 }, autoStartPrompted: true });
+    initialSettings = settings.getAll();
+  }
+
+  applyAutoStart(initialSettings.behavior.autoStart);
 
   poller = new Poller(initialSettings.behavior.pollIntervalSec * 1000);
   poller.on("update", (payload) => {
@@ -100,7 +132,19 @@ ipcMain.on("widget:resize", (_event, size) => {
   }
 });
 
+// 온보딩 버튼 동작 — 렌더러는 액션 id만 보내고, URL은 여기서 고정(허용 목록)한다.
+const HELP_URL = "https://github.com/jee-hub3/hobby-ji#install";
+ipcMain.on("onboarding:action", (_event, id) => {
+  if (id === "help") {
+    shell.openExternal(HELP_URL);
+  } else if (id === "retry" && poller) {
+    poller.tick();
+  }
+});
+
 ipcMain.handle("settings:get", () => settings.getAll());
+
+ipcMain.handle("app:info", () => ({ canAutoStart: canAutoStart() }));
 
 ipcMain.on("settings:set", (_event, partial) => {
   const prev = settings.getAll();
@@ -121,7 +165,7 @@ ipcMain.on("settings:set", (_event, partial) => {
       widgetWin.setAlwaysOnTop(updated.behavior.alwaysOnTop);
     }
     if (typeof partial.behavior.autoStart === "boolean") {
-      app.setLoginItemSettings({ openAtLogin: updated.behavior.autoStart });
+      applyAutoStart(updated.behavior.autoStart);
     }
   }
 

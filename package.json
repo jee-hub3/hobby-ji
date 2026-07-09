@@ -1,6 +1,6 @@
 {
   "name": "claude-usage-widget",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "description": "Claude 사용량(세션/주간)을 항상 화면에 띄워놓는 데스크톱 위젯",
   "main": "src/main/index.js",

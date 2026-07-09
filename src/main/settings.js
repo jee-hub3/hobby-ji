@@ -25,6 +25,7 @@ const DEFAULTS = {
     alwaysOnTop: true,
   },
   position: { x: null, y: null },
+  autoStartPrompted: false, // 첫 실행 자동시작 프롬프트를 이미 띄웠는지
 };
 
 const store = new Store({ defaults: DEFAULTS });

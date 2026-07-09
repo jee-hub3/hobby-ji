@@ -1,7 +1,26 @@
-const ERROR_MESSAGES = {
-  NO_CREDENTIALS: "Claude Code 로그인이 필요합니다.\n(claude login 실행 후 재시작)",
-  AUTH_EXPIRED: "토큰이 만료되었습니다.\nClaude Code에 다시 로그인하세요.",
-  UNKNOWN_ERROR: "사용량을 불러올 수 없습니다.",
+// 각 오류에 문구 + 안내 버튼 노출 여부(showActions)를 매핑.
+// showActions=true면 "설치·로그인 안내"/"다시 시도" 버튼을 함께 보여준다.
+const ERROR_INFO = {
+  NO_CREDENTIALS: {
+    text: "Claude Code에 로그인되어 있지 않아요.\n로그인 후 아래 버튼을 눌러주세요.",
+    showActions: true,
+  },
+  AUTH_EXPIRED: {
+    text: "로그인이 만료됐어요.\nClaude Code에 다시 로그인해 주세요.",
+    showActions: true,
+  },
+  RATE_LIMITED: {
+    text: "요청이 많아 잠시 후 자동으로 다시 시도합니다.",
+    showActions: false,
+  },
+  NETWORK_ERROR: {
+    text: "네트워크에 연결할 수 없어요.\n연결을 확인해 주세요.",
+    showActions: true,
+  },
+  UNKNOWN_ERROR: {
+    text: "사용량을 불러올 수 없어요.",
+    showActions: true,
+  },
 };
 
 const el = {
@@ -18,7 +37,14 @@ const el = {
   weeklyPercent: document.getElementById("weekly-percent"),
   weeklyReset: document.getElementById("weekly-reset"),
   scopedLine: document.getElementById("scoped-line"),
+  msgText: document.getElementById("msg-text"),
+  msgActions: document.getElementById("msg-actions"),
+  btnHelp: document.getElementById("btn-help"),
+  btnRetry: document.getElementById("btn-retry"),
 };
+
+el.btnHelp.addEventListener("click", () => window.claudeUsage.onboardingAction("help"));
+el.btnRetry.addEventListener("click", () => window.claudeUsage.onboardingAction("retry"));
 
 let currentSettings = null;
 let lastPayload = null;
@@ -128,9 +154,11 @@ function render() {
   const fields = currentSettings.layout.fields || [];
 
   if (!data) {
+    const info = ERROR_INFO[error] || ERROR_INFO.UNKNOWN_ERROR;
     el.content.hidden = true;
     el.message.hidden = false;
-    el.message.textContent = ERROR_MESSAGES[error] || ERROR_MESSAGES.UNKNOWN_ERROR;
+    el.msgText.textContent = info.text;
+    el.msgActions.hidden = !info.showActions;
     el.updated.textContent = "-";
     el.statusDot.style.opacity = "0.3";
     scheduleReport();

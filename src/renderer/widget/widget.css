@@ -152,13 +152,47 @@ body.size-L {
 }
 
 .message {
+  width: 18em;
+  padding: 0.5em 0 0.2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7em;
+}
+.msg-text {
   font-size: 0.86em;
   line-height: 1.5;
-  color: var(--text-dim);
+  color: var(--text);
   text-align: center;
   white-space: pre-line;
-  width: 18em;
-  padding: 0.6em 0;
+}
+.msg-actions {
+  display: flex;
+  gap: 0.5em;
+}
+.msg-btn {
+  -webkit-app-region: no-drag; /* 드래그 영역 안의 버튼은 클릭 가능하게 */
+  font-family: inherit;
+  font-size: 0.78em;
+  padding: 0.45em 0.8em;
+  border-radius: 0.5em;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  cursor: pointer;
+}
+.msg-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.msg-btn.primary {
+  border-color: transparent;
+  background: linear-gradient(var(--session-angle), var(--session-from), var(--session-to));
+  color: #fff;
+  font-weight: 600;
+}
+:root[data-bg="light"] .msg-btn {
+  border-color: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 /* ─────────── 세로형 ─────────── */

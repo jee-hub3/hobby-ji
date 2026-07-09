@@ -107,7 +107,16 @@ dangerAt.addEventListener("change", () => patchBehavior({ dangerAt: Number(dange
 const notifications = document.getElementById("notifications");
 notifications.addEventListener("change", () => patchBehavior({ notifications: notifications.checked }));
 const autoStart = document.getElementById("auto-start");
+const autoStartNote = document.getElementById("auto-start-note");
 autoStart.addEventListener("change", () => patchBehavior({ autoStart: autoStart.checked }));
+
+// 자동시작은 설치본에서만 지원 — portable/dev면 체크박스를 비활성화하고 이유를 표시
+window.claudeUsage.getAppInfo().then((info) => {
+  if (!info.canAutoStart) {
+    autoStart.disabled = true;
+    autoStartNote.textContent = "(설치본에서만 지원)";
+  }
+});
 const alwaysOnTop = document.getElementById("always-on-top");
 alwaysOnTop.addEventListener("change", () => patchBehavior({ alwaysOnTop: alwaysOnTop.checked }));
 
