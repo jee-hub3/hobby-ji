@@ -20,7 +20,15 @@ jobs:
 
       - run: npm ci
 
-      - name: Build and publish
-        run: npm run build -- --publish always
+      # nsis와 portable을 한 번에 publish하면 electron-builder가 두 타겟에서
+      # 동시에 "release가 아직 없다"고 판단해 중복 Draft 릴리스를 만드는 버그가
+      # 있다. 순차 실행하면 두 번째 호출이 첫 번째가 만든 release를 재사용한다.
+      - name: Build and publish (nsis)
+        run: npm run build -- --win nsis --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish (portable)
+        run: npm run build -- --win portable --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
