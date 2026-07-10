@@ -1,0 +1,219 @@
+/* Editorial Ledger 컨셉 — 06-컨셉-스킨-명세.md §4 */
+[data-concept="ledger"] {
+  --led-paper: #f8f5ef;
+  --led-ink: #1a1a1a;
+  --led-dim: rgba(26, 26, 26, 0.5);
+  --led-hair: rgba(26, 26, 26, 0.2);
+  --led-accent: var(--session-from); /* 프리셋 단일 잉크 */
+}
+
+/* 은은한 그림자 여백 확보 */
+[data-concept="ledger"] #concept-root {
+  padding: 4px 10px 14px 10px;
+}
+
+.led-panel {
+  position: relative;
+  -webkit-app-region: drag;
+  font-family: Georgia, "Times New Roman", "Batang", serif;
+  color: var(--led-ink);
+  background: var(--led-paper);
+  opacity: var(--opacity, 1);
+  box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.3);
+  font-size: 13px;
+}
+body[data-size="S"] .led-panel {
+  font-size: 11px;
+}
+body[data-size="L"] .led-panel {
+  font-size: 15.5px;
+}
+
+/* 마스트헤드 + 더블 룰 */
+.led-masthead {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.led-title {
+  font-size: 0.82em;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+.led-livedot {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: var(--led-accent);
+}
+.led-rule {
+  border: 0;
+  border-top: 2px solid var(--led-ink);
+  margin: 0;
+}
+.led-rule::after {
+  content: "";
+  display: block;
+  border-top: 1px solid var(--led-ink);
+  margin-top: 2px;
+}
+
+/* 메트릭 컬럼 */
+.led-label {
+  font-size: 0.82em;
+  font-weight: 700;
+}
+.led-sublabel {
+  font-size: 0.62em;
+  color: var(--led-dim);
+}
+.led-num {
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.led-num .led-pctsign {
+  color: var(--led-accent);
+  font-size: 0.5em;
+  vertical-align: super;
+  margin-left: 0.08em;
+}
+.led-num.warn {
+  color: var(--warn, #f0a020);
+}
+.led-num.danger {
+  color: var(--danger, #e5484d);
+}
+.led-reset {
+  font-size: 0.66em;
+  color: var(--led-dim);
+}
+
+/* 눈금자 */
+.led-ruler {
+  position: relative;
+  height: 1.6em;
+}
+.led-ruler-base {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0.5em;
+  border-top: 1px solid var(--led-hair);
+}
+.led-ruler-tick {
+  position: absolute;
+  top: 0.25em;
+  width: 1px;
+  height: 0.5em;
+  background: var(--led-hair);
+}
+.led-ruler-use {
+  position: absolute;
+  left: 0;
+  top: 0.44em;
+  height: 2px;
+  background: var(--led-ink);
+}
+.led-ruler-marker {
+  position: absolute;
+  top: 0.05em;
+  width: 2px;
+  height: 0.9em;
+  background: var(--led-accent);
+  transform: translateX(-1px);
+}
+
+/* ── 가로 (2단) ── */
+.led-panel.led-horizontal {
+  border-radius: 6px;
+  padding: 0.9em 1.1em;
+  width: 30em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.led-horizontal .led-cols {
+  display: flex;
+  gap: 1.1em;
+}
+.led-horizontal .led-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+.led-horizontal .led-col + .led-col {
+  border-left: 1px solid var(--led-hair);
+  padding-left: 1.1em;
+}
+.led-horizontal .led-num {
+  font-size: 3em;
+}
+.led-foot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6em;
+  color: var(--led-dim);
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--led-hair);
+  padding-top: 0.35em;
+}
+
+/* ── 세로 (1단) ── */
+.led-panel.led-vertical {
+  border-radius: 6px;
+  padding: 0.9em 1em;
+  width: 13.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45em;
+}
+.led-vertical .led-title {
+  font-size: 0.66em;
+}
+.led-vertical .led-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+.led-vertical .led-num {
+  font-size: 2.3em;
+}
+.led-vertical .led-colsep {
+  border-top: 1px solid var(--led-hair);
+  margin: 0.25em 0;
+}
+
+/* ── 컴팩트 (티커) ── */
+.led-panel.led-compact {
+  border-radius: 4px;
+  padding: 0.4em 0.8em;
+  width: auto;
+  border-top: 1.5px solid var(--led-ink);
+  border-bottom: 1.5px solid var(--led-ink);
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.led-compact .led-tick-item {
+  font-size: 0.82em;
+}
+.led-compact .led-tick-num {
+  font-size: 1.3em;
+  font-weight: 700;
+}
+.led-compact .led-tick-num .led-pctsign {
+  color: var(--led-accent);
+}
+.led-compact .led-tick-num.warn {
+  color: var(--warn, #f0a020);
+}
+.led-compact .led-tick-num.danger {
+  color: var(--danger, #e5484d);
+}
+.led-compact .led-vsep {
+  width: 1px;
+  align-self: stretch;
+  background: var(--led-hair);
+}

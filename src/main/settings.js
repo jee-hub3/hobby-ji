@@ -5,6 +5,7 @@ const Store = require("electron-store");
 
 const DEFAULTS = {
   theme: {
+    concept: "classic", // classic | aurora | brutal | ledger (06-컨셉-스킨-명세.md)
     // 막대 색은 세션/주간을 독립적으로 설정한다.
     session: { preset: "claude", customGradient: { from: "#D97757", to: "#E8A87C", angle: 135 } },
     weekly: { preset: "ocean", customGradient: { from: "#667eea", to: "#64b5f6", angle: 135 } },
@@ -30,18 +31,23 @@ const DEFAULTS = {
 
 const store = new Store({ defaults: DEFAULTS });
 
-// 구(舊) 단일 색상 테마({preset, customGradient})를 세션/주간 분리 형태로 변환.
+// 구(舊) 단일 색상 테마({preset, customGradient})를 세션/주간 분리 형태로 변환하고,
+// concept 키가 없던 기존 설정 파일은 classic으로 채운다(하위 호환).
 function migrateTheme() {
   const t = store.get("theme");
-  if (t && !t.session) {
+  if (!t) return;
+  if (!t.session) {
     const preset = t.preset || "claude";
     const customGradient = t.customGradient || { from: "#D97757", to: "#E8A87C", angle: 135 };
     store.set("theme", {
+      concept: t.concept || "classic",
       session: { preset, customGradient: { ...customGradient } },
       weekly: { preset, customGradient: { ...customGradient } },
       background: t.background || "dark",
       opacity: typeof t.opacity === "number" ? t.opacity : 0.92,
     });
+  } else if (!t.concept) {
+    store.set("theme", { ...t, concept: "classic" });
   }
 }
 migrateTheme();

@@ -5,6 +5,9 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'" />
     <title>Claude Usage Widget</title>
     <link rel="stylesheet" href="widget.css" />
+    <link rel="stylesheet" href="concepts/aurora.css" />
+    <link rel="stylesheet" href="concepts/brutal.css" />
+    <link rel="stylesheet" href="concepts/ledger.css" />
   </head>
   <body>
     <div id="widget" class="widget">
@@ -40,7 +43,14 @@
         </div>
       </div>
     </div>
+
+    <!-- 비-classic 컨셉(aurora/brutal/ledger)이 여기에 자신의 패널을 렌더 -->
+    <div id="concept-root" hidden></div>
+
     <script src="../shared/presets.js"></script>
+    <script src="concepts/aurora.js"></script>
+    <script src="concepts/brutal.js"></script>
+    <script src="concepts/ledger.js"></script>
     <script src="widget.js"></script>
   </body>
 </html>

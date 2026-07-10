@@ -14,13 +14,29 @@
     </div>
 
     <section class="tab-panel" id="tab-theme">
-      <h3>색상 적용 대상</h3>
-      <div class="segmented" id="color-target">
-        <button type="button" data-value="session">세션 막대</button>
-        <button type="button" data-value="weekly">주간 막대</button>
+      <h3>컨셉</h3>
+      <div class="concept-grid" id="concept-grid">
+        <button type="button" class="concept-card" data-concept="classic">
+          <span class="concept-prev cp-classic"></span><span class="concept-name">Classic</span>
+        </button>
+        <button type="button" class="concept-card" data-concept="aurora">
+          <span class="concept-prev cp-aurora"></span><span class="concept-name">Aurora</span>
+        </button>
+        <button type="button" class="concept-card" data-concept="brutal">
+          <span class="concept-prev cp-brutal"></span><span class="concept-name">Neo Brutal</span>
+        </button>
+        <button type="button" class="concept-card" data-concept="ledger">
+          <span class="concept-prev cp-ledger"></span><span class="concept-name">Ledger</span>
+        </button>
       </div>
 
-      <h3>프리셋 <span id="target-hint" class="dim"></span></h3>
+      <h3>색상 적용 대상 <span id="target-hint" class="dim"></span></h3>
+      <div class="segmented" id="color-target">
+        <button type="button" data-value="session">세션</button>
+        <button type="button" data-value="weekly">주간</button>
+      </div>
+
+      <h3>프리셋</h3>
       <div class="preset-grid" id="preset-grid"></div>
 
       <h3>커스텀 색상</h3>

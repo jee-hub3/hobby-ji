@@ -60,6 +60,52 @@ h3:first-child {
   gap: 8px;
 }
 
+/* ── 컨셉 선택 카드 ── */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.concept-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: #2a2622;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #f5f0ec;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+.concept-card.selected {
+  border-color: #d97757;
+}
+.concept-prev {
+  width: 34px;
+  height: 24px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+.cp-classic {
+  background: linear-gradient(135deg, #d97757, #667eea);
+}
+.cp-aurora {
+  background: radial-gradient(circle at 30% 30%, #ff8c59, transparent 60%),
+    radial-gradient(circle at 70% 70%, #7c5cff, #0d0b16);
+}
+.cp-brutal {
+  background: #fffcf2;
+  border: 2px solid #121212;
+  box-shadow: 2px 2px 0 #121212;
+}
+.cp-ledger {
+  background: #f8f5ef;
+  border-top: 2px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+}
+
 .preset-swatch {
   height: 36px;
   border-radius: 8px;

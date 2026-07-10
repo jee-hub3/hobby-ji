@@ -1,0 +1,205 @@
+/* Neo Brutal 컨셉 — 06-컨셉-스킨-명세.md §3 */
+[data-concept="brutal"] {
+  --br-ink: #121212;
+  --br-paper: #fffcf2;
+  --br-yellow: #ffd433;
+}
+
+/* 하드섀도우(7px 7px)가 창에 잘리지 않도록 여백 확보 */
+[data-concept="brutal"] #concept-root {
+  padding: 7px 12px 12px 5px;
+}
+
+.br-panel {
+  position: relative;
+  -webkit-app-region: drag;
+  font-family: "Malgun Gothic", "Segoe UI", sans-serif;
+  color: var(--br-ink);
+  background: var(--br-paper);
+  border: 3px solid var(--br-ink);
+  box-shadow: 7px 7px 0 var(--br-ink);
+  opacity: var(--opacity, 1); /* brutal 투명도는 전체 창 opacity로 */
+  font-size: 13px;
+}
+body[data-size="S"] .br-panel {
+  font-size: 11px;
+}
+body[data-size="L"] .br-panel {
+  font-size: 15.5px;
+}
+
+/* 헤드라인 + 형광펜 밑줄 */
+.br-head {
+  position: relative;
+  display: inline-block;
+  font-size: 1.3em;
+  font-weight: 900;
+  z-index: 0;
+}
+.br-head::after {
+  content: "";
+  position: absolute;
+  left: -0.1em;
+  right: -0.1em;
+  bottom: 0.05em;
+  height: 0.45em;
+  background: var(--br-yellow);
+  z-index: -1;
+}
+
+/* 리셋 스티커 배지 (회전 4°) */
+.br-badge {
+  font-size: 0.72em;
+  font-weight: 900;
+  background: var(--br-yellow);
+  border: 2.5px solid var(--br-ink);
+  box-shadow: 3px 3px 0 var(--br-ink);
+  padding: 0.2em 0.5em;
+  transform: rotate(4deg);
+  white-space: nowrap;
+}
+
+/* 10칸 블록 게이지 (가로) */
+.br-blocks {
+  display: flex;
+  gap: 0.18em;
+}
+.br-block {
+  width: 1.15em;
+  height: 1.5em;
+  border: 2px solid var(--br-ink);
+  border-radius: 3px;
+  background: transparent;
+}
+.br-block.on {
+  background: var(--seg, var(--br-ink));
+}
+
+.br-label {
+  font-size: 0.9em;
+  font-weight: 900;
+}
+.br-pct {
+  font-size: 1.3em;
+  font-weight: 900;
+}
+.br-pct.warn {
+  color: var(--warn, #f0a020);
+}
+.br-pct.danger {
+  color: var(--danger, #e5484d);
+}
+.br-metric-s {
+  --seg: var(--session-from);
+}
+.br-metric-w {
+  --seg: var(--weekly-from);
+}
+.br-footer {
+  font-size: 0.8em;
+  font-weight: 700;
+  color: rgba(18, 18, 18, 0.65);
+}
+
+/* ── 가로 ── */
+.br-panel.br-horizontal {
+  border-radius: 14px;
+  padding: 1em 1.15em;
+  width: 25em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+.br-horizontal .br-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+.br-horizontal .br-metric {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.br-horizontal .br-metric .br-label {
+  width: 2.6em;
+  flex-shrink: 0;
+}
+.br-horizontal .br-blocks {
+  flex: 1;
+}
+.br-horizontal .br-pct {
+  width: 2.6em;
+  text-align: right;
+}
+.br-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+/* ── 세로: 배터리 타워 ── */
+.br-panel.br-vertical {
+  border-radius: 14px;
+  padding: 1em;
+  width: 13.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+}
+.br-vertical .br-head {
+  font-size: 1em;
+}
+.br-vertical .br-towers {
+  display: flex;
+  gap: 1.4em;
+  justify-content: center;
+}
+.br-vertical .br-tower {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35em;
+}
+.br-vertical .br-blocks {
+  flex-direction: column-reverse; /* 아래에서부터 차오름 */
+  gap: 0.16em;
+}
+.br-vertical .br-block {
+  width: 2.15em;
+  height: 1em;
+}
+.br-vertical .br-pct {
+  font-size: 1.1em;
+}
+.br-vertical .br-label {
+  font-size: 0.78em;
+}
+
+/* ── 컴팩트 ── */
+.br-panel.br-compact {
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 var(--br-ink);
+  padding: 0.5em 0.75em;
+  width: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+}
+.br-compact .br-cmetric {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.br-compact .br-label {
+  font-size: 0.78em;
+}
+.br-compact .br-block {
+  width: 0.9em;
+  height: 1.2em;
+  border-width: 1.5px;
+}
+.br-compact .br-pct {
+  font-size: 1em;
+}

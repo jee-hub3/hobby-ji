@@ -1,0 +1,251 @@
+/* Aurora Glass 컨셉 — 06-컨셉-스킨-명세.md §2 */
+[data-concept="aurora"] {
+  --aur-cream: #fff7f0;
+  --aur-dim: rgba(255, 247, 240, 0.55);
+  --aur-dim2: rgba(255, 247, 240, 0.45);
+  --aur-track: rgba(255, 255, 255, 0.09);
+}
+
+/* 드롭섀도우가 창에 잘리지 않도록 컨테이너에 여백 확보 */
+[data-concept="aurora"] #concept-root {
+  padding: 6px 12px 20px 12px;
+}
+
+.aur-panel {
+  position: relative;
+  overflow: hidden;
+  -webkit-app-region: drag;
+  font-family: "Segoe UI", "Malgun Gothic", sans-serif;
+  color: var(--aur-cream);
+  background: rgba(13, 11, 22, calc(0.72 * var(--opacity, 1)));
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border: 1.2px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 14px 38px -8px rgba(0, 0, 0, 0.45);
+  font-size: 13px;
+}
+body[data-size="S"] .aur-panel {
+  font-size: 11px;
+}
+body[data-size="L"] .aur-panel {
+  font-size: 15.5px;
+}
+/* 흰색 그라데이션 테두리 */
+.aur-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.12));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* 내부 글로우 (프리셋 색 연동) */
+.aur-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.aur-glow-warm {
+  width: 9em;
+  height: 9em;
+  left: -3em;
+  top: -3.5em;
+  background: var(--session-from);
+}
+.aur-glow-cool {
+  width: 9em;
+  height: 9em;
+  right: -3em;
+  bottom: -3.5em;
+  background: var(--weekly-to);
+}
+.aur-defs {
+  position: absolute;
+}
+
+/* ── 링 게이지 ── */
+.aur-ring-dual {
+  width: 8.3em;
+  height: 8.3em;
+  display: block;
+}
+.aur-ring-mini {
+  width: 2.7em;
+  height: 2.7em;
+  display: block;
+}
+.aur-track {
+  fill: none;
+  stroke: var(--aur-track);
+}
+.aur-arc {
+  fill: none;
+  transition: stroke-dasharray 0.5s ease;
+}
+.aur-center-pct {
+  fill: var(--aur-cream);
+  font-size: 21px;
+  font-weight: 700;
+}
+.aur-center-pct.warn {
+  fill: var(--warn, #f0a020);
+}
+.aur-center-pct.danger {
+  fill: var(--danger, #e5484d);
+}
+.aur-center-lbl {
+  fill: var(--aur-dim);
+  font-size: 9px;
+}
+
+/* ── 브랜드 / LIVE ── */
+.aur-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+}
+.aur-wordmark {
+  font-size: 0.92em;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+}
+.aur-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32em;
+  font-size: 0.6em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #7fe7a4;
+}
+.aur-live-dot {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0.5em #4ade80;
+  animation: aur-pulse 1.8s ease-in-out infinite;
+}
+@keyframes aur-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* ── 메트릭 정보 블록 ── */
+.aur-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.aur-metric {
+  display: flex;
+  gap: 0.5em;
+  align-items: stretch;
+}
+.aur-tick {
+  width: 0.28em;
+  border-radius: 0.14em;
+  flex-shrink: 0;
+}
+.aur-metric-s .aur-tick {
+  background: linear-gradient(180deg, var(--session-from), var(--session-to));
+}
+.aur-metric-w .aur-tick {
+  background: linear-gradient(180deg, var(--weekly-from), var(--weekly-to));
+}
+.aur-mlabel {
+  font-size: 0.62em;
+  color: var(--aur-dim);
+  letter-spacing: 0.04em;
+}
+.aur-mabs {
+  font-size: 0.9em;
+  color: var(--aur-cream);
+  white-space: nowrap;
+}
+.aur-mrel {
+  font-size: 0.62em;
+  color: var(--aur-dim2);
+}
+.aur-updated {
+  font-size: 0.58em;
+  color: rgba(255, 247, 240, 0.35);
+}
+
+/* ── 컴팩트 미니 ── */
+.aur-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.aur-mini-pct {
+  font-size: 0.85em;
+  font-weight: 700;
+}
+.aur-mini-pct.warn {
+  color: var(--warn, #f0a020);
+}
+.aur-mini-pct.danger {
+  color: var(--danger, #e5484d);
+}
+
+/* ── 레이아웃: 가로 ── */
+.aur-panel.aur-horizontal {
+  display: flex;
+  align-items: center;
+  gap: 1.1em;
+  padding: 1.15em 1.4em;
+  border-radius: 30px;
+  width: 26em;
+}
+.aur-horizontal .aur-info {
+  flex: 1;
+}
+.aur-horizontal .aur-updated {
+  align-self: flex-end;
+  margin-top: -0.2em;
+}
+
+/* ── 레이아웃: 세로 ── */
+.aur-panel.aur-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7em;
+  padding: 1.2em 1em;
+  border-radius: 26px;
+  width: 11.5em;
+}
+.aur-vertical .aur-info {
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+.aur-vertical .aur-metric {
+  justify-content: center;
+}
+.aur-vertical .aur-updated {
+  display: none;
+}
+
+/* ── 레이아웃: 컴팩트 (필) ── */
+.aur-panel.aur-compact {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  padding: 0.55em 1.1em;
+  border-radius: 999px;
+  width: auto;
+}
+.aur-compact .aur-updated {
+  font-size: 0.66em;
+  color: rgba(255, 247, 240, 0.5);
+}

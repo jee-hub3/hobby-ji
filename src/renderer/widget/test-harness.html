@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Widget Concept Test Harness</title>
+    <link rel="stylesheet" href="widget.css" />
+    <link rel="stylesheet" href="concepts/aurora.css" />
+    <link rel="stylesheet" href="concepts/brutal.css" />
+    <link rel="stylesheet" href="concepts/ledger.css" />
+    <style>
+      /* 위젯 배경(투명)을 눈으로 보기 쉽게 체커보드 위에 올린다 (하니스 전용) */
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: repeating-conic-gradient(#3a3a3a 0% 25%, #2a2a2a 0% 50%) 50% / 24px 24px;
+      }
+      #stage {
+        display: inline-block;
+      }
+      /* 캡처(still) 모드: 헤드리스 스크린샷이 멈추지 않도록 애니메이션·블러 끄기 */
+      html.still * {
+        animation: none !important;
+        transition: none !important;
+      }
+      html.still .aur-panel {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <div id="widget" class="widget">
+        <div class="header">
+          <span class="dot" id="status-dot"></span>
+          <span class="title">Claude</span>
+          <span class="updated" id="updated">-- 갱신</span>
+        </div>
+        <div id="content">
+          <div class="row">
+            <span class="label">세션</span>
+            <div class="bar-track"><div class="bar-fill" id="session-fill"></div></div>
+            <span class="percent" id="session-percent">--%</span>
+          </div>
+          <div class="sub" id="session-reset">-</div>
+          <div class="row">
+            <span class="label">주간</span>
+            <div class="bar-track"><div class="bar-fill" id="weekly-fill"></div></div>
+            <span class="percent" id="weekly-percent">--%</span>
+          </div>
+          <div class="sub" id="weekly-reset">-</div>
+          <div class="sub" id="scoped-line" hidden></div>
+        </div>
+        <div class="message" id="message" hidden>
+          <div class="msg-text" id="msg-text"></div>
+          <div class="msg-actions" id="msg-actions" hidden>
+            <button type="button" class="msg-btn primary" id="btn-help">설치·로그인 안내</button>
+            <button type="button" class="msg-btn" id="btn-retry">다시 시도</button>
+          </div>
+        </div>
+      </div>
+      <div id="concept-root" hidden></div>
+    </div>
+
+    <script>
+      // ── claudeUsage 목킹 (Electron preload 대체) ──
+      const q = new URLSearchParams(location.search);
+      const concept = q.get("concept") || "classic";
+      const mode = q.get("layout") || "horizontal";
+      const size = q.get("size") || "M";
+      const sPct = Number(q.get("s") || 88);
+      const wPct = Number(q.get("w") || 41);
+      if (q.get("still")) document.documentElement.classList.add("still");
+
+      const PRESET_BY_CONCEPT = {
+        classic: { s: "claude", w: "ocean" },
+        aurora: { s: "ember-indigo", w: "ember-indigo" },
+        brutal: { s: "tomato-sky", w: "tomato-sky" },
+        ledger: { s: "terracotta", w: "terracotta" },
+      };
+      const pr = PRESET_BY_CONCEPT[concept] || PRESET_BY_CONCEPT.classic;
+
+      const settings = {
+        theme: {
+          concept,
+          session: { preset: pr.s, customGradient: { from: "#D97757", to: "#E8A87C", angle: 135 } },
+          weekly: { preset: pr.w, customGradient: { from: "#667eea", to: "#64b5f6", angle: 135 } },
+          background: "dark",
+          opacity: 0.92,
+        },
+        layout: { mode, size, fields: ["session", "weekly", "resetTime", "modelSpecific"] },
+        behavior: { pollIntervalSec: 90, warnAt: 80, dangerAt: 95, notifications: true, autoStart: false, alwaysOnTop: true },
+      };
+
+      let updateCb = null;
+      function feed() {
+        if (!updateCb) return;
+        updateCb({
+          data: {
+            session: { utilizationPercent: sPct, resetsAt: new Date(Date.now() + 2 * 3600e3 + 14 * 60e3).toISOString() },
+            weekly: { utilizationPercent: wPct, resetsAt: new Date(Date.now() + 3 * 86400e3).toISOString() },
+            scoped: [{ label: "Opus", percent: 12 }],
+          },
+          stale: false,
+          error: null,
+        });
+      }
+      window.claudeUsage = {
+        getSettings: () => Promise.resolve(settings),
+        onSettingsUpdate: () => {},
+        onUpdate: (cb) => { updateCb = cb; feed(); },
+        reportSize: () => {},
+        onboardingAction: () => {},
+        requestContextMenu: () => {},
+      };
+    </script>
+    <script src="../shared/presets.js"></script>
+    <script src="concepts/aurora.js"></script>
+    <script src="concepts/brutal.js"></script>
+    <script src="concepts/ledger.js"></script>
+    <script src="widget.js"></script>
+  </body>
+</html>

@@ -30,6 +30,13 @@
   display: none !important;
 }
 
+/* 비-classic 컨셉 컨테이너: 콘텐츠에 맞게 측정되도록 inline-block.
+   컨셉별 그림자 여백은 각 컨셉 CSS의 [data-concept] #concept-root 패딩으로 확보. */
+#concept-root {
+  display: inline-block;
+  vertical-align: top;
+}
+
 html,
 body {
   margin: 0;

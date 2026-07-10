@@ -1,13 +1,18 @@
 let settings = null;
 let colorTarget = "session"; // 색상 편집 대상: session | weekly
+let gridConcept = null; // 프리셋 그리드를 마지막으로 그린 컨셉
 
-// 변경된 필드만 델타로 보낸다. main이 섹션 단위로 얕은 병합하므로
-// 다른 필드(예: preset)를 건드리지 않는다. (stale 상태로 서로 덮어쓰던 버그 방지)
+// 컨셉 전환 시 세션/주간에 채울 기본 프리셋
+const CONCEPT_DEFAULTS = {
+  classic: { s: "claude", w: "ocean" },
+  aurora: { s: "ember-indigo", w: "ember-indigo" },
+  brutal: { s: "tomato-sky", w: "tomato-sky" },
+  ledger: { s: "terracotta", w: "terracotta" },
+};
+
 function patchTheme(delta) {
   window.claudeUsage.setSettings({ theme: delta });
 }
-// theme.session / theme.weekly는 중첩 객체라 완전한 하위 객체를 보내야
-// main의 얕은 병합에서 다른 키(customGradient 등)가 유실되지 않는다.
 function patchColorTarget(delta) {
   const current = settings.theme[colorTarget];
   patchTheme({ [colorTarget]: { ...current, ...delta } });
@@ -17,6 +22,23 @@ function patchLayout(delta) {
 }
 function patchBehavior(delta) {
   window.claudeUsage.setSettings({ behavior: delta });
+}
+
+// 프리셋 id → 특정 메트릭 색상 {from,to,angle}
+function colorsFor(concept, presetId, kind) {
+  const list = CONCEPT_PRESETS[concept] || CONCEPT_PRESETS.classic;
+  const p = list.find((x) => x.id === presetId);
+  if (!p) return { from: "#D97757", to: "#E8A87C", angle: 135 };
+  if (p.accent) return { from: p.accent, to: p.accent, angle: 135 };
+  if (p.session && p.weekly) {
+    const g = p[kind];
+    return { from: g.from, to: g.to, angle: 135 };
+  }
+  return { from: p.from, to: p.to, angle: 135 };
+}
+
+function metricObj(concept, presetId, kind) {
+  return { preset: presetId, customGradient: colorsFor(concept, presetId, kind) };
 }
 
 // ── 탭 전환 ──
@@ -29,26 +51,59 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
   });
 });
 
-// ── 테마 탭 ──
+// ── 컨셉 선택 ──
+document.querySelectorAll("#concept-grid .concept-card").forEach((card) => {
+  card.addEventListener("click", () => {
+    const concept = card.dataset.concept;
+    const d = CONCEPT_DEFAULTS[concept] || CONCEPT_DEFAULTS.classic;
+    // 컨셉 + 해당 컨셉 기본 프리셋을 세션/주간에 적용 (레이아웃/투명도/동작은 유지)
+    patchTheme({
+      concept,
+      session: metricObj(concept, d.s, "session"),
+      weekly: metricObj(concept, d.w, "weekly"),
+    });
+  });
+});
+
+// ── 색상 적용 대상 ──
 const targetHint = document.getElementById("target-hint");
 document.querySelectorAll("#color-target button").forEach((btn) => {
   btn.addEventListener("click", () => {
     colorTarget = btn.dataset.value;
-    renderForm(settings); // 편집 대상 전환 → 그리드/피커를 그 대상 값으로 갱신
+    renderForm(settings);
   });
 });
 
+// ── 프리셋 그리드 (컨셉별로 다시 그림) ──
 const presetGrid = document.getElementById("preset-grid");
-GRADIENT_PRESETS.forEach((preset) => {
-  const swatch = document.createElement("button");
-  swatch.type = "button";
-  swatch.className = "preset-swatch";
-  swatch.title = preset.name;
-  swatch.style.background = `linear-gradient(135deg, ${preset.from}, ${preset.to})`;
-  swatch.dataset.presetId = preset.id;
-  swatch.addEventListener("click", () => patchColorTarget({ preset: preset.id }));
-  presetGrid.appendChild(swatch);
-});
+
+function swatchBackground(concept, p) {
+  if (p.accent) return p.accent;
+  if (p.session && p.weekly) return `linear-gradient(90deg, ${p.session.from} 0 50%, ${p.weekly.from} 50% 100%)`;
+  return `linear-gradient(135deg, ${p.from}, ${p.to})`;
+}
+
+function buildPresetGrid(concept) {
+  const list = CONCEPT_PRESETS[concept] || CONCEPT_PRESETS.classic;
+  presetGrid.innerHTML = "";
+  list.forEach((p) => {
+    const swatch = document.createElement("button");
+    swatch.type = "button";
+    swatch.className = "preset-swatch";
+    swatch.title = p.name;
+    swatch.style.background = swatchBackground(concept, p);
+    swatch.dataset.presetId = p.id;
+    swatch.addEventListener("click", () => {
+      if (concept === "classic") {
+        patchColorTarget({ preset: p.id });
+      } else {
+        patchTheme({ session: metricObj(concept, p.id, "session"), weekly: metricObj(concept, p.id, "weekly") });
+      }
+    });
+    presetGrid.appendChild(swatch);
+  });
+  gridConcept = concept;
+}
 
 const customFrom = document.getElementById("custom-from");
 const customTo = document.getElementById("custom-to");
@@ -57,11 +112,7 @@ const customAngle = document.getElementById("custom-angle");
 function pushCustomGradient() {
   patchColorTarget({
     preset: "custom",
-    customGradient: {
-      from: customFrom.value,
-      to: customTo.value,
-      angle: Number(customAngle.value),
-    },
+    customGradient: { from: customFrom.value, to: customTo.value, angle: Number(customAngle.value) },
   });
 }
 customFrom.addEventListener("input", pushCustomGradient);
@@ -98,19 +149,15 @@ document.querySelectorAll(".field-check").forEach((cb) => {
 // ── 동작 탭 ──
 const pollInterval = document.getElementById("poll-interval");
 pollInterval.addEventListener("change", () => patchBehavior({ pollIntervalSec: Number(pollInterval.value) }));
-
 const warnAt = document.getElementById("warn-at");
 const dangerAt = document.getElementById("danger-at");
 warnAt.addEventListener("change", () => patchBehavior({ warnAt: Number(warnAt.value) }));
 dangerAt.addEventListener("change", () => patchBehavior({ dangerAt: Number(dangerAt.value) }));
-
 const notifications = document.getElementById("notifications");
 notifications.addEventListener("change", () => patchBehavior({ notifications: notifications.checked }));
 const autoStart = document.getElementById("auto-start");
 const autoStartNote = document.getElementById("auto-start-note");
 autoStart.addEventListener("change", () => patchBehavior({ autoStart: autoStart.checked }));
-
-// 자동시작은 설치본에서만 지원 — portable/dev면 체크박스를 비활성화하고 이유를 표시
 window.claudeUsage.getAppInfo().then((info) => {
   if (!info.canAutoStart) {
     autoStart.disabled = true;
@@ -120,9 +167,16 @@ window.claudeUsage.getAppInfo().then((info) => {
 const alwaysOnTop = document.getElementById("always-on-top");
 alwaysOnTop.addEventListener("change", () => patchBehavior({ alwaysOnTop: alwaysOnTop.checked }));
 
-// ── 폼 상태 반영 (초기 + 변경 브로드캐스트 시) ──
+// ── 폼 상태 반영 ──
 function renderForm(s) {
   settings = s;
+  const concept = (s.theme && s.theme.concept) || "classic";
+
+  document.querySelectorAll("#concept-grid .concept-card").forEach((c) => {
+    c.classList.toggle("selected", c.dataset.concept === concept);
+  });
+
+  if (gridConcept !== concept) buildPresetGrid(concept);
 
   const metric = s.theme[colorTarget];
   targetHint.textContent = colorTarget === "session" ? "(세션)" : "(주간)";
@@ -130,10 +184,11 @@ function renderForm(s) {
     btn.classList.toggle("selected", btn.dataset.value === colorTarget);
   });
 
-  presetGrid.querySelectorAll(".preset-swatch").forEach((el) => {
-    el.classList.toggle("selected", el.dataset.presetId === metric.preset);
+  const activePreset = concept === "classic" ? metric.preset : s.theme.session.preset;
+  presetGrid.querySelectorAll(".preset-swatch").forEach((elm) => {
+    elm.classList.toggle("selected", elm.dataset.presetId === activePreset);
   });
-  // 값이 바뀔 때만 대입 → 사용자가 조작 중인 입력을 방해하지 않음
+
   if (document.activeElement !== customFrom) customFrom.value = metric.customGradient.from;
   if (document.activeElement !== customTo) customTo.value = metric.customGradient.to;
   if (document.activeElement !== customAngle) customAngle.value = String(metric.customGradient.angle);
@@ -141,10 +196,7 @@ function renderForm(s) {
   document.querySelectorAll("#bg-mode button").forEach((btn) => {
     btn.classList.toggle("selected", btn.dataset.value === s.theme.background);
   });
-
-  if (document.activeElement !== opacityInput) {
-    opacityInput.value = String(Math.round(s.theme.opacity * 100));
-  }
+  if (document.activeElement !== opacityInput) opacityInput.value = String(Math.round(s.theme.opacity * 100));
   opacityValue.textContent = `${Math.round(s.theme.opacity * 100)}%`;
 
   document.querySelectorAll("#layout-mode button").forEach((btn) => {
@@ -166,4 +218,4 @@ function renderForm(s) {
 }
 
 window.claudeUsage.getSettings().then(renderForm);
-window.claudeUsage.onSettingsUpdate(renderForm); // 로컬 settings를 항상 최신으로 유지
+window.claudeUsage.onSettingsUpdate(renderForm);
