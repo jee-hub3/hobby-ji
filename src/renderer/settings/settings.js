@@ -119,8 +119,27 @@ customFrom.addEventListener("input", pushCustomGradient);
 customTo.addEventListener("input", pushCustomGradient);
 customAngle.addEventListener("change", pushCustomGradient);
 
-document.querySelectorAll("#bg-mode button").forEach((btn) => {
-  btn.addEventListener("click", () => patchTheme({ background: btn.dataset.value }));
+// ── 배경 스타일 그리드 (classic 전용) ──
+const bgstyleGrid = document.getElementById("bgstyle-grid");
+BG_STYLES.forEach((bs) => {
+  const sw = document.createElement("button");
+  sw.type = "button";
+  sw.className = `bgstyle-swatch bgsw-${bs.id}`;
+  sw.title = bs.name;
+  sw.dataset.bgId = bs.id;
+  sw.addEventListener("click", () => patchTheme({ bgStyle: bs.id }));
+  bgstyleGrid.appendChild(sw);
+});
+
+// emerald/magma 추천 바 색 조합 적용 버튼
+const bgRecoBtn = document.getElementById("bg-reco-btn");
+bgRecoBtn.addEventListener("click", () => {
+  const reco = BG_RECO[settings.theme.bgStyle];
+  if (!reco) return;
+  patchTheme({
+    session: { preset: "custom", customGradient: { ...reco.session } },
+    weekly: { preset: "custom", customGradient: { ...reco.weekly } },
+  });
 });
 
 const opacityInput = document.getElementById("opacity");
@@ -193,9 +212,15 @@ function renderForm(s) {
   if (document.activeElement !== customTo) customTo.value = metric.customGradient.to;
   if (document.activeElement !== customAngle) customAngle.value = String(metric.customGradient.angle);
 
-  document.querySelectorAll("#bg-mode button").forEach((btn) => {
-    btn.classList.toggle("selected", btn.dataset.value === s.theme.background);
+  // 배경 스타일은 classic 전용
+  const bgSection = document.getElementById("bgstyle-section");
+  bgSection.hidden = concept !== "classic";
+  bgstyleGrid.querySelectorAll(".bgstyle-swatch").forEach((sw) => {
+    sw.classList.toggle("selected", sw.dataset.bgId === s.theme.bgStyle);
   });
+  // emerald/magma일 때만 추천 조합 버튼 노출
+  bgRecoBtn.hidden = !BG_RECO[s.theme.bgStyle];
+
   if (document.activeElement !== opacityInput) opacityInput.value = String(Math.round(s.theme.opacity * 100));
   opacityValue.textContent = `${Math.round(s.theme.opacity * 100)}%`;
 

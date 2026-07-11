@@ -7,9 +7,9 @@
   --led-accent: var(--session-from); /* 프리셋 단일 잉크 */
 }
 
-/* 은은한 그림자 여백 확보 */
+/* 투명 창에서 흐린 그림자가 창 경계에 잘려 자국이 남으므로 box-shadow를 쓰지 않는다. */
 [data-concept="ledger"] #concept-root {
-  padding: 4px 10px 14px 10px;
+  padding: 0;
 }
 
 .led-panel {
@@ -19,7 +19,6 @@
   color: var(--led-ink);
   background: var(--led-paper);
   opacity: var(--opacity, 1);
-  box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.3);
   font-size: 13px;
 }
 body[data-size="S"] .led-panel {
@@ -39,6 +38,7 @@ body[data-size="L"] .led-panel {
   font-size: 0.82em;
   font-weight: 700;
   letter-spacing: 0.16em;
+  color: var(--led-accent);
 }
 .led-livedot {
   width: 0.5em;
@@ -48,7 +48,7 @@ body[data-size="L"] .led-panel {
 }
 .led-rule {
   border: 0;
-  border-top: 2px solid var(--led-ink);
+  border-top: 2px solid var(--led-accent);
   margin: 0;
 }
 .led-rule::after {
@@ -71,6 +71,7 @@ body[data-size="L"] .led-panel {
   font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  color: var(--led-accent);
 }
 .led-num .led-pctsign {
   color: var(--led-accent);
@@ -92,7 +93,7 @@ body[data-size="L"] .led-panel {
 /* 눈금자 */
 .led-ruler {
   position: relative;
-  height: 1.6em;
+  height: 1.9em;
 }
 .led-ruler-base {
   position: absolute;
@@ -127,15 +128,15 @@ body[data-size="L"] .led-panel {
 /* ── 가로 (2단) ── */
 .led-panel.led-horizontal {
   border-radius: 6px;
-  padding: 0.9em 1.1em;
-  width: 30em;
+  padding: 1.15em 1.35em;
+  width: 31em;
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
+  gap: 0.7em;
 }
 .led-horizontal .led-cols {
   display: flex;
-  gap: 1.1em;
+  gap: 1.35em;
 }
 .led-horizontal .led-col {
   flex: 1;
@@ -145,10 +146,13 @@ body[data-size="L"] .led-panel {
 }
 .led-horizontal .led-col + .led-col {
   border-left: 1px solid var(--led-hair);
-  padding-left: 1.1em;
+  padding-left: 1.35em;
 }
 .led-horizontal .led-num {
-  font-size: 3em;
+  font-size: 3.5em;
+}
+.led-horizontal .led-col {
+  gap: 0.5em;
 }
 .led-foot {
   display: flex;
@@ -178,7 +182,7 @@ body[data-size="L"] .led-panel {
   gap: 0.25em;
 }
 .led-vertical .led-num {
-  font-size: 2.3em;
+  font-size: 2.6em;
 }
 .led-vertical .led-colsep {
   border-top: 1px solid var(--led-hair);
@@ -188,13 +192,13 @@ body[data-size="L"] .led-panel {
 /* ── 컴팩트 (티커) ── */
 .led-panel.led-compact {
   border-radius: 4px;
-  padding: 0.4em 0.8em;
+  padding: 0.65em 1.2em;
   width: auto;
   border-top: 1.5px solid var(--led-ink);
   border-bottom: 1.5px solid var(--led-ink);
   display: flex;
   align-items: center;
-  gap: 0.6em;
+  gap: 1em;
 }
 .led-compact .led-tick-item {
   font-size: 0.82em;
@@ -202,6 +206,11 @@ body[data-size="L"] .led-panel {
 .led-compact .led-tick-num {
   font-size: 1.3em;
   font-weight: 700;
+  color: var(--led-accent);
+}
+.led-compact .led-vsep {
+  background: var(--led-accent);
+  opacity: 0.5;
 }
 .led-compact .led-tick-num .led-pctsign {
   color: var(--led-accent);

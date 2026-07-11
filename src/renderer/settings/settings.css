@@ -106,6 +106,64 @@ h3:first-child {
   border-bottom: 1px solid #1a1a1a;
 }
 
+/* ── 배경 스타일 스와치 ── */
+.bgstyle-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.bgstyle-swatch {
+  height: 32px;
+  border-radius: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+}
+.bgstyle-swatch.selected {
+  border-color: #fff;
+}
+.bgsw-flat-dark {
+  background: #181614;
+}
+.bgsw-flat-light {
+  background: #faf8f6;
+}
+.bgsw-coolfog {
+  background: linear-gradient(135deg, #f0f2f6, #dfe4ec);
+}
+.bgsw-warmpaper {
+  background: linear-gradient(135deg, #f6f0e7, #eaddce);
+}
+.bgsw-meshaurora {
+  background: radial-gradient(circle at 25% 25%, rgba(255, 140, 89, 0.5), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(124, 92, 255, 0.4), transparent 55%), #14121c;
+}
+.bgsw-meshlight {
+  background: radial-gradient(circle at 25% 25%, rgba(255, 140, 89, 0.55), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(100, 150, 255, 0.45), transparent 55%), #f3f4f8;
+}
+.bgsw-holofoil {
+  background: conic-gradient(from 30deg, #ffd9e8, #c9e7ff, #d5ffe8, #fff3c4, #ffd9e8);
+}
+.bgsw-emerald {
+  background: radial-gradient(circle at 20% 15%, rgba(43, 232, 160, 0.35), transparent 60%),
+    linear-gradient(135deg, #0e4d3a, #03150f);
+}
+.bgsw-magma {
+  background: radial-gradient(circle at 20% 85%, rgba(255, 77, 28, 0.6), transparent 60%),
+    linear-gradient(135deg, #4a0f0c, #170404);
+}
+.reco-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 8px;
+  background: #d97757;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 .preset-swatch {
   height: 36px;
   border-radius: 8px;

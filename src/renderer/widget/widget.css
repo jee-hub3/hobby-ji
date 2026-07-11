@@ -15,9 +15,8 @@
 }
 
 :root[data-bg="light"] {
-  --bg-rgb: 250, 248, 246;
-  --text: #2a2521;
-  --text-dim: rgba(42, 37, 33, 0.5);
+  --text: #292420;
+  --text-dim: rgba(41, 36, 32, 0.5);
   --track: rgba(0, 0, 0, 0.1);
 }
 
@@ -59,16 +58,66 @@ body.size-L {
 }
 
 .widget {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   padding: 1em 1.15em;
   border-radius: 1.15em;
-  background: rgba(var(--bg-rgb), var(--opacity));
+  background: transparent;
   color: var(--text);
   -webkit-app-region: drag;
   user-select: none;
   width: 20.5em; /* 가로형 기본 폭 */
+}
+
+/* 배경 스타일 레이어 — 투명도는 배경에만 적용, 텍스트는 불투명 유지 (§1) */
+.widget::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: var(--opacity, 1);
+  background: #181614; /* flat-dark 기본 */
+}
+:root[data-bgstyle="flat-light"] .widget::before {
+  background: #faf8f6;
+}
+:root[data-bgstyle="coolfog"] .widget::before {
+  background: linear-gradient(135deg, #f0f2f6, #dfe4ec);
+}
+:root[data-bgstyle="warmpaper"] .widget::before {
+  background: linear-gradient(135deg, #f6f0e7, #eaddce);
+}
+:root[data-bgstyle="meshaurora"] .widget::before {
+  background:
+    radial-gradient(circle at 22% 20%, color-mix(in srgb, var(--session-from) 20%, transparent), transparent 45%),
+    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--weekly-from) 16%, transparent), transparent 50%),
+    #14121c;
+}
+:root[data-bgstyle="meshlight"] .widget::before {
+  background:
+    radial-gradient(circle at 22% 20%, color-mix(in srgb, var(--session-from) 32%, transparent), transparent 48%),
+    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--weekly-from) 28%, transparent), transparent 52%),
+    #f3f4f8;
+}
+:root[data-bgstyle="holofoil"] .widget::before {
+  background:
+    linear-gradient(30deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 100%),
+    conic-gradient(from 30deg, #ffd9e8, #c9e7ff, #d5ffe8, #fff3c4, #ffd9e8);
+}
+:root[data-bgstyle="emerald"] .widget::before {
+  background:
+    radial-gradient(circle at 18% 15%, rgba(43, 232, 160, 0.2), transparent 55%),
+    radial-gradient(circle at 85% 88%, rgba(245, 193, 92, 0.22), transparent 55%),
+    linear-gradient(135deg, #0e4d3a, #03150f);
+}
+:root[data-bgstyle="magma"] .widget::before {
+  background:
+    radial-gradient(circle at 15% 88%, rgba(255, 77, 28, 0.45), transparent 55%),
+    radial-gradient(circle at 88% 15%, rgba(255, 179, 71, 0.3), transparent 55%),
+    linear-gradient(135deg, #4a0f0c, #170404);
 }
 
 /* ── 헤더 ── */

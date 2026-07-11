@@ -150,7 +150,10 @@ function applyTheme(theme) {
   root.style.setProperty("--weekly-to", w.to);
   root.style.setProperty("--weekly-angle", `${w.angle ?? 135}deg`);
   root.style.setProperty("--opacity", theme.opacity);
-  root.setAttribute("data-bg", theme.background);
+  // classic 배경 스타일: data-bgstyle로 배경 CSS 선택, data-bg로 텍스트 잉크 반전 결정
+  const bgStyle = theme.bgStyle || "flat-dark";
+  root.setAttribute("data-bgstyle", bgStyle);
+  root.setAttribute("data-bg", isLightBgStyle(bgStyle) ? "light" : "dark");
 }
 
 function applyBodyClasses(layout, concept) {

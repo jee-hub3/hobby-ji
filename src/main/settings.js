@@ -9,7 +9,8 @@ const DEFAULTS = {
     // 막대 색은 세션/주간을 독립적으로 설정한다.
     session: { preset: "claude", customGradient: { from: "#D97757", to: "#E8A87C", angle: 135 } },
     weekly: { preset: "ocean", customGradient: { from: "#667eea", to: "#64b5f6", angle: 135 } },
-    background: "dark",
+    // classic 배경 스타일 8종 (§1). 기존 background "dark"/"light"에서 이행.
+    bgStyle: "flat-dark",
     opacity: 0.92,
   },
   layout: {
@@ -36,6 +37,7 @@ const store = new Store({ defaults: DEFAULTS });
 function migrateTheme() {
   const t = store.get("theme");
   if (!t) return;
+  const bgStyleFrom = (bg) => (bg === "light" ? "flat-light" : "flat-dark");
   if (!t.session) {
     const preset = t.preset || "claude";
     const customGradient = t.customGradient || { from: "#D97757", to: "#E8A87C", angle: 135 };
@@ -43,11 +45,14 @@ function migrateTheme() {
       concept: t.concept || "classic",
       session: { preset, customGradient: { ...customGradient } },
       weekly: { preset, customGradient: { ...customGradient } },
-      background: t.background || "dark",
+      bgStyle: t.bgStyle || bgStyleFrom(t.background),
       opacity: typeof t.opacity === "number" ? t.opacity : 0.92,
     });
-  } else if (!t.concept) {
-    store.set("theme", { ...t, concept: "classic" });
+  } else {
+    const patch = {};
+    if (!t.concept) patch.concept = "classic";
+    if (!t.bgStyle) patch.bgStyle = bgStyleFrom(t.background); // dark/light → flat-dark/flat-light
+    if (Object.keys(patch).length) store.set("theme", { ...t, ...patch });
   }
 }
 migrateTheme();

@@ -116,7 +116,8 @@
         if (refs.miniW) { refs.miniW.textContent = `${vm.weekly.pct}%`; sev(refs.miniW, vm.weekly.severity); }
         if (refs.miniWrapS) refs.miniWrapS.hidden = !vm.sessionOn;
         if (refs.miniWrapW) refs.miniWrapW.hidden = !vm.weeklyOn;
-        if (refs.updated) refs.updated.textContent = `↻ ${vm.nowClock}`;
+        // 컴팩트 우측은 리셋 카운트다운(세션 기준)
+        if (refs.updated) refs.updated.textContent = `↻ ${vm.session.resetHM}`;
         return;
       }
 

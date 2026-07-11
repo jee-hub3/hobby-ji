@@ -33,6 +33,8 @@ const LEDGER_PRESETS = [
   { id: "prussian", name: "Prussian", accent: "#2C4770" },
   { id: "forest", name: "Forest", accent: "#3E5F44" },
   { id: "burgundy", name: "Burgundy", accent: "#7A2E3A" },
+  { id: "indigo", name: "Indigo", accent: "#3B3564" },
+  { id: "slate", name: "Slate", accent: "#45525C" },
 ];
 
 const CONCEPT_PRESETS = {
@@ -40,6 +42,36 @@ const CONCEPT_PRESETS = {
   aurora: AURORA_PRESETS,
   brutal: BRUTAL_PRESETS,
   ledger: LEDGER_PRESETS,
+};
+
+// classic 배경 스타일 8종 (§1). light=true면 텍스트 잉크 반전.
+const BG_STYLES = [
+  { id: "flat-dark", name: "다크", light: false },
+  { id: "flat-light", name: "라이트", light: true },
+  { id: "coolfog", name: "Cool Fog", light: true },
+  { id: "warmpaper", name: "Warm Paper", light: true },
+  { id: "meshaurora", name: "Mesh Aurora", light: false },
+  { id: "meshlight", name: "Mesh Light", light: true },
+  { id: "holofoil", name: "Holo Foil", light: true },
+  { id: "emerald", name: "Emerald", light: false },
+  { id: "magma", name: "Magma", light: false },
+];
+
+function isLightBgStyle(id) {
+  const s = BG_STYLES.find((x) => x.id === id);
+  return s ? s.light : false;
+}
+
+// 볼드 배경(emerald/magma) 권장 바 색 조합
+const BG_RECO = {
+  emerald: {
+    session: { from: "#F5C15C", to: "#FFE29B", angle: 135 },
+    weekly: { from: "#2BE8A0", to: "#8FF5CD", angle: 135 },
+  },
+  magma: {
+    session: { from: "#FFB347", to: "#FFE08A", angle: 135 },
+    weekly: { from: "#FFE9D6", to: "#FFB59B", angle: 135 },
+  },
 };
 
 // 기존 classic 설정 UI 호환용 별칭

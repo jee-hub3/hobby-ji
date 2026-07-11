@@ -6,9 +6,10 @@
   --aur-track: rgba(255, 255, 255, 0.09);
 }
 
-/* 드롭섀도우가 창에 잘리지 않도록 컨테이너에 여백 확보 */
+/* 투명 창에서는 흐린 드롭섀도우가 창 경계에서 잘려 사각 자국으로 보이므로
+   box-shadow를 쓰지 않고, 컨테이너 여백도 두지 않는다. */
 [data-concept="aurora"] #concept-root {
-  padding: 6px 12px 20px 12px;
+  padding: 0;
 }
 
 .aur-panel {
@@ -17,12 +18,12 @@
   -webkit-app-region: drag;
   font-family: "Segoe UI", "Malgun Gothic", sans-serif;
   color: var(--aur-cream);
-  background: rgba(13, 11, 22, calc(0.72 * var(--opacity, 1)));
+  /* 투명도 슬라이더 값 그대로 알파에 반영 → 100%에서 완전 불투명 */
+  background: rgba(13, 11, 22, var(--opacity, 1));
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
   border: 1.2px solid transparent;
   background-clip: padding-box;
-  box-shadow: 0 14px 38px -8px rgba(0, 0, 0, 0.45);
   font-size: 13px;
 }
 body[data-size="S"] .aur-panel {
@@ -148,11 +149,13 @@ body[data-size="L"] .aur-panel {
 .aur-metric {
   display: flex;
   gap: 0.5em;
-  align-items: stretch;
+  align-items: flex-start;
 }
 .aur-tick {
-  width: 0.28em;
-  border-radius: 0.14em;
+  width: 0.24em;
+  height: 1.15em;
+  margin-top: 0.15em;
+  border-radius: 0.12em;
   flex-shrink: 0;
 }
 .aur-metric-s .aur-tick {
@@ -167,7 +170,7 @@ body[data-size="L"] .aur-panel {
   letter-spacing: 0.04em;
 }
 .aur-mabs {
-  font-size: 0.9em;
+  font-size: 0.96em;
   color: var(--aur-cream);
   white-space: nowrap;
 }
@@ -224,6 +227,11 @@ body[data-size="L"] .aur-panel {
   border-radius: 26px;
   width: 11.5em;
 }
+/* 세로형 링은 더 작게(스펙: 세션 86px), 중앙 숫자도 함께 축소됨 */
+.aur-vertical .aur-ring-dual {
+  width: 6.6em;
+  height: 6.6em;
+}
 .aur-vertical .aur-info {
   align-items: center;
   text-align: center;
@@ -240,10 +248,14 @@ body[data-size="L"] .aur-panel {
 .aur-panel.aur-compact {
   display: flex;
   align-items: center;
-  gap: 0.9em;
-  padding: 0.55em 1.1em;
+  gap: 1.35em;
+  padding: 0.7em 1.6em;
   border-radius: 999px;
   width: auto;
+}
+.aur-compact .aur-ring-mini {
+  width: 2.9em;
+  height: 2.9em;
 }
 .aur-compact .aur-updated {
   font-size: 0.66em;
