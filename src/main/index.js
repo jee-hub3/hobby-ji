@@ -80,11 +80,14 @@ function recenterAndShow() {
 
 // 단일 인스턴스 잠금 — 중복 실행 방지. 이미 켜져 있으면 두 번째 실행은
 // 기존 위젯을 화면 중앙으로 소환하고 종료한다("안 보임" 시 재실행으로 복구).
-const gotSingleInstanceLock = app.requestSingleInstanceLock();
+// 단, electron-builder portable은 임시폴더에서 재실행되는 구조라 이 잠금과
+// 충돌해 UI 인스턴스가 즉시 종료된다 → 포터블에서는 잠금을 건너뛴다.
+const isPortable = !!process.env.PORTABLE_EXECUTABLE_FILE;
+const gotSingleInstanceLock = isPortable ? true : app.requestSingleInstanceLock();
 if (!gotSingleInstanceLock) {
   app.quit();
 }
-app.on("second-instance", () => recenterAndShow());
+if (!isPortable) app.on("second-instance", () => recenterAndShow());
 
 if (gotSingleInstanceLock)
 app.whenReady().then(() => {
