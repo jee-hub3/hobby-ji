@@ -247,3 +247,179 @@ input[type="range"] {
   padding: 6px 0;
   cursor: pointer;
 }
+
+/* ============================================================
+   컨셉별 설정 패널 리스킨 (06-컨셉-스킨-명세.md §2~4)
+   settings.js가 body[data-concept] 와 세션/주간 색 변수를 설정한다.
+   ============================================================ */
+
+/* ── AURORA: 다크 글래스 + 웜 그라데이션 악센트 ── */
+body[data-concept="aurora"] {
+  background: radial-gradient(circle at 92% -5%, rgba(124, 92, 255, 0.2), transparent 42%), #14121c;
+  color: #fff7f0;
+}
+body[data-concept="aurora"] .tabs {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+body[data-concept="aurora"] .tab-btn {
+  color: rgba(255, 247, 240, 0.55);
+}
+body[data-concept="aurora"] .tab-btn.active {
+  color: #fff7f0;
+  border-bottom-color: var(--session-from);
+}
+body[data-concept="aurora"] h3 {
+  color: rgba(255, 247, 240, 0.5);
+}
+body[data-concept="aurora"] .segmented button,
+body[data-concept="aurora"] .concept-card,
+body[data-concept="aurora"] select,
+body[data-concept="aurora"] input[type="number"] {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #fff7f0;
+}
+body[data-concept="aurora"] .segmented button {
+  border-radius: 999px;
+}
+body[data-concept="aurora"] .segmented button.selected {
+  background: linear-gradient(135deg, var(--session-from), var(--session-to));
+  border-color: transparent;
+  color: #fff;
+}
+body[data-concept="aurora"] .concept-card {
+  border-radius: 12px;
+}
+body[data-concept="aurora"] .concept-card.selected {
+  border-color: var(--session-from);
+}
+body[data-concept="aurora"] .preset-swatch.selected,
+body[data-concept="aurora"] .bgstyle-swatch.selected {
+  border-color: #fff;
+}
+body[data-concept="aurora"] input[type="range"],
+body[data-concept="aurora"] .check-label input {
+  accent-color: var(--session-from);
+}
+body[data-concept="aurora"] .reco-btn {
+  background: linear-gradient(135deg, var(--session-from), var(--session-to));
+}
+
+/* ── BRUTAL: 크림 카드 + 3px 테두리 + 하드섀도우 + 옐로 ── */
+body[data-concept="brutal"] {
+  background: #fffcf2;
+  color: #121212;
+  font-family: "Malgun Gothic", "Segoe UI", sans-serif;
+}
+body[data-concept="brutal"] .tabs {
+  border-bottom: 3px solid #121212;
+}
+body[data-concept="brutal"] .tab-btn {
+  color: rgba(18, 18, 18, 0.55);
+  font-weight: 800;
+}
+body[data-concept="brutal"] .tab-btn.active {
+  color: #121212;
+  border-bottom: 3px solid #ffd433;
+}
+body[data-concept="brutal"] h3 {
+  color: rgba(18, 18, 18, 0.6);
+  font-weight: 800;
+}
+body[data-concept="brutal"] .segmented button,
+body[data-concept="brutal"] .concept-card,
+body[data-concept="brutal"] select,
+body[data-concept="brutal"] input[type="number"] {
+  background: #fff;
+  color: #121212;
+  border: 2.5px solid #121212;
+  border-radius: 0;
+  font-family: inherit;
+  font-weight: 700;
+}
+body[data-concept="brutal"] .segmented button.selected,
+body[data-concept="brutal"] .concept-card.selected {
+  background: #ffd433;
+  border-color: #121212;
+  color: #121212;
+  box-shadow: 3px 3px 0 #121212;
+}
+body[data-concept="brutal"] .preset-swatch,
+body[data-concept="brutal"] .bgstyle-swatch {
+  border: 2.5px solid #121212;
+  border-radius: 0;
+}
+body[data-concept="brutal"] .preset-swatch.selected,
+body[data-concept="brutal"] .bgstyle-swatch.selected {
+  box-shadow: 3px 3px 0 #121212;
+  border-color: #121212;
+}
+body[data-concept="brutal"] input[type="range"],
+body[data-concept="brutal"] .check-label input {
+  accent-color: #ffd433;
+}
+body[data-concept="brutal"] .reco-btn {
+  background: #ffd433;
+  color: #121212;
+  border: 2.5px solid #121212;
+  border-radius: 0;
+  box-shadow: 3px 3px 0 #121212;
+  font-weight: 800;
+}
+
+/* ── LEDGER: 종이 배경 + 세리프 + 잉크 악센트 + 헤어라인 ── */
+body[data-concept="ledger"] {
+  background: #f8f5ef;
+  color: #1a1a1a;
+  font-family: Georgia, "Times New Roman", "Batang", serif;
+}
+body[data-concept="ledger"] .tabs {
+  border-bottom: 2px solid #1a1a1a;
+}
+body[data-concept="ledger"] .tab-btn {
+  color: rgba(26, 26, 26, 0.5);
+}
+body[data-concept="ledger"] .tab-btn.active {
+  color: #1a1a1a;
+  font-weight: 700;
+  border-bottom: 2px solid var(--session-from);
+}
+body[data-concept="ledger"] h3 {
+  color: rgba(26, 26, 26, 0.55);
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.2);
+  padding-bottom: 3px;
+}
+body[data-concept="ledger"] .segmented button,
+body[data-concept="ledger"] .concept-card,
+body[data-concept="ledger"] select,
+body[data-concept="ledger"] input[type="number"] {
+  background: transparent;
+  color: #1a1a1a;
+  border: 1px solid rgba(26, 26, 26, 0.3);
+  border-radius: 2px;
+  font-family: inherit;
+}
+body[data-concept="ledger"] .segmented button.selected {
+  background: transparent;
+  color: var(--session-from);
+  font-weight: 700;
+  border: 1px solid rgba(26, 26, 26, 0.3);
+  border-bottom: 2px solid var(--session-from);
+}
+body[data-concept="ledger"] .concept-card.selected {
+  border-color: var(--session-from);
+}
+body[data-concept="ledger"] .preset-swatch.selected,
+body[data-concept="ledger"] .bgstyle-swatch.selected {
+  border-color: var(--session-from);
+}
+body[data-concept="ledger"] input[type="range"],
+body[data-concept="ledger"] .check-label input {
+  accent-color: var(--session-from);
+}
+body[data-concept="ledger"] .reco-btn {
+  background: var(--session-from);
+  color: #fff;
+  border-radius: 2px;
+}

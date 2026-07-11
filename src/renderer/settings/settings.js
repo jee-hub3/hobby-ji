@@ -191,6 +191,16 @@ function renderForm(s) {
   settings = s;
   const concept = (s.theme && s.theme.concept) || "classic";
 
+  // 설정 패널도 현재 컨셉의 시각 언어로 리스킨 (settings.css의 [data-concept] 스코프)
+  document.body.dataset.concept = concept;
+  const rootEl = document.documentElement;
+  const sg = metricColors(s.theme, "session");
+  const wg = metricColors(s.theme, "weekly");
+  rootEl.style.setProperty("--session-from", sg.from);
+  rootEl.style.setProperty("--session-to", sg.to);
+  rootEl.style.setProperty("--weekly-from", wg.from);
+  rootEl.style.setProperty("--weekly-to", wg.to);
+
   document.querySelectorAll("#concept-grid .concept-card").forEach((c) => {
     c.classList.toggle("selected", c.dataset.concept === concept);
   });

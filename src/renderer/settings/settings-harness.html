@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Settings Harness</title>
+    <link rel="stylesheet" href="settings.css" />
+  </head>
+  <body>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="theme">테마</button>
+      <button class="tab-btn" data-tab="layout">레이아웃</button>
+      <button class="tab-btn" data-tab="behavior">동작</button>
+    </div>
+    <section class="tab-panel" id="tab-theme">
+      <h3>컨셉</h3>
+      <div class="concept-grid" id="concept-grid">
+        <button type="button" class="concept-card" data-concept="classic"><span class="concept-prev cp-classic"></span><span class="concept-name">Classic</span></button>
+        <button type="button" class="concept-card" data-concept="aurora"><span class="concept-prev cp-aurora"></span><span class="concept-name">Aurora</span></button>
+        <button type="button" class="concept-card" data-concept="brutal"><span class="concept-prev cp-brutal"></span><span class="concept-name">Neo Brutal</span></button>
+        <button type="button" class="concept-card" data-concept="ledger"><span class="concept-prev cp-ledger"></span><span class="concept-name">Ledger</span></button>
+      </div>
+      <h3>색상 적용 대상 <span id="target-hint" class="dim"></span></h3>
+      <div class="segmented" id="color-target">
+        <button type="button" data-value="session">세션</button>
+        <button type="button" data-value="weekly">주간</button>
+      </div>
+      <h3>프리셋</h3>
+      <div class="preset-grid" id="preset-grid"></div>
+      <h3>커스텀 색상</h3>
+      <div class="row-group">
+        <label class="color-label">시작 <input type="color" id="custom-from" /></label>
+        <label class="color-label">끝 <input type="color" id="custom-to" /></label>
+        <label class="color-label">방향 <select id="custom-angle"><option value="90">→</option><option value="180">↓</option><option value="135">↘</option></select></label>
+      </div>
+      <div id="bgstyle-section">
+        <h3>배경 스타일</h3>
+        <div class="bgstyle-grid" id="bgstyle-grid"></div>
+        <button type="button" class="reco-btn" id="bg-reco-btn" hidden>추천 바 색 조합 적용</button>
+      </div>
+      <h3>투명도 <span id="opacity-value" class="dim"></span></h3>
+      <input type="range" id="opacity" min="30" max="100" step="1" />
+    </section>
+    <section class="tab-panel" id="tab-layout" hidden>
+      <h3>레이아웃</h3>
+      <div class="segmented" id="layout-mode">
+        <button type="button" data-value="horizontal">가로형</button>
+        <button type="button" data-value="vertical">세로형</button>
+        <button type="button" data-value="compact">컴팩트</button>
+      </div>
+      <h3>크기</h3>
+      <div class="segmented" id="layout-size">
+        <button type="button" data-value="S">S</button>
+        <button type="button" data-value="M">M</button>
+        <button type="button" data-value="L">L</button>
+      </div>
+      <h3>표시 항목</h3>
+      <label class="check-label"><input type="checkbox" value="session" class="field-check" /> 세션</label>
+      <label class="check-label"><input type="checkbox" value="weekly" class="field-check" /> 주간</label>
+      <label class="check-label"><input type="checkbox" value="resetTime" class="field-check" /> 초기화 시각</label>
+      <label class="check-label"><input type="checkbox" value="modelSpecific" class="field-check" /> 모델별</label>
+    </section>
+    <section class="tab-panel" id="tab-behavior" hidden>
+      <h3>폴링 주기</h3>
+      <select id="poll-interval"><option value="60">1분</option><option value="90">90초</option><option value="120">2분</option><option value="180">3분</option></select>
+      <h3>경고 임계값</h3>
+      <div class="row-group">
+        <label class="number-label">경고 <input type="number" id="warn-at" min="1" max="100" /> %</label>
+        <label class="number-label">위험 <input type="number" id="danger-at" min="1" max="100" /> %</label>
+      </div>
+      <h3>알림 / 시작</h3>
+      <label class="check-label"><input type="checkbox" id="notifications" /> Windows 알림</label>
+      <label class="check-label"><input type="checkbox" id="auto-start" /> 부팅 시 자동 시작 <span id="auto-start-note" class="dim"></span></label>
+      <label class="check-label"><input type="checkbox" id="always-on-top" /> 항상 위</label>
+    </section>
+
+    <script>
+      // IIFE로 격리 — settings.js의 전역 `settings` 등과 이름 충돌 방지
+      (function () {
+        const q = new URLSearchParams(location.search);
+        const concept = q.get("concept") || "classic";
+        const PR = { classic: { s: "claude", w: "ocean" }, aurora: { s: "ember-indigo", w: "ember-indigo" }, brutal: { s: "tomato-sky", w: "tomato-sky" }, ledger: { s: "terracotta", w: "terracotta" } }[concept];
+        const mockSettings = {
+          theme: { concept, session: { preset: PR.s, customGradient: { from: "#D97757", to: "#E8A87C", angle: 135 } }, weekly: { preset: PR.w, customGradient: { from: "#667eea", to: "#64b5f6", angle: 135 } }, bgStyle: "flat-dark", opacity: 0.92 },
+          layout: { mode: "horizontal", size: "M", fields: ["session", "weekly", "resetTime"] },
+          behavior: { pollIntervalSec: 90, warnAt: 80, dangerAt: 95, notifications: true, autoStart: false, alwaysOnTop: true },
+        };
+        window.claudeUsage = {
+          getSettings: () => Promise.resolve(mockSettings),
+          getAppInfo: () => Promise.resolve({ canAutoStart: false }),
+          setSettings: () => {},
+          onSettingsUpdate: () => {},
+        };
+      })();
+    </script>
+    <script src="../shared/presets.js"></script>
+    <script src="settings.js"></script>
+  </body>
+</html>
