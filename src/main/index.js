@@ -1,5 +1,5 @@
 const { app, ipcMain, Menu, Notification, shell, dialog } = require("electron");
-const { createWidgetWindow, createSettingsWindow, resizeWidget } = require("./windows");
+const { createWidgetWindow, createSettingsWindow, resizeWidget, recenterWidget } = require("./windows");
 const { createTray } = require("./tray");
 const Poller = require("./poller");
 const settings = require("./settings");
@@ -74,6 +74,19 @@ function toggleWidgetVisibility() {
   else widgetWin.show();
 }
 
+function recenterAndShow() {
+  recenterWidget(widgetWin);
+}
+
+// 단일 인스턴스 잠금 — 중복 실행 방지. 이미 켜져 있으면 두 번째 실행은
+// 기존 위젯을 화면 중앙으로 소환하고 종료한다("안 보임" 시 재실행으로 복구).
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+if (!gotSingleInstanceLock) {
+  app.quit();
+}
+app.on("second-instance", () => recenterAndShow());
+
+if (gotSingleInstanceLock)
 app.whenReady().then(() => {
   widgetWin = createWidgetWindow();
 
@@ -110,6 +123,7 @@ app.whenReady().then(() => {
   tray = createTray({
     isWidgetVisible: () => widgetWin && !widgetWin.isDestroyed() && widgetWin.isVisible(),
     onToggleWidget: toggleWidgetVisibility,
+    onRecenter: recenterAndShow,
     onOpenSettings: openSettingsWindow,
     onQuit: () => app.quit(),
   });
@@ -120,6 +134,7 @@ ipcMain.on("widget:context-menu", () => {
   const menu = Menu.buildFromTemplate([
     { label: "설정...", click: openSettingsWindow },
     { label: visible ? "위젯 숨기기" : "위젯 보이기", click: toggleWidgetVisibility },
+    { label: "위젯 위치 초기화", click: recenterAndShow },
     { type: "separator" },
     { label: "종료", click: () => app.quit() },
   ]);

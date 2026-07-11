@@ -64,6 +64,20 @@ function resizeWidget(win, width, height) {
   if (clamped.x !== x || clamped.y !== y) win.setPosition(clamped.x, clamped.y);
 }
 
+// 위젯을 커서가 있는 화면 중앙 상단(1/4 지점)으로 옮기고 보이게 한다.
+// "위젯을 잃어버렸을 때"(오프스크린/저대비 배경으로 안 보임) 복구용.
+function recenterWidget(win) {
+  if (!win || win.isDestroyed()) return;
+  const { workArea } = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+  const [w, h] = win.getSize();
+  const x = Math.round(workArea.x + (workArea.width - w) / 2);
+  const y = Math.round(workArea.y + (workArea.height - h) / 4);
+  win.setPosition(x, y);
+  settings.setPosition({ x, y });
+  if (!win.isVisible()) win.show();
+  win.focus();
+}
+
 function createSettingsWindow() {
   const win = new BrowserWindow({
     width: 360,
@@ -83,4 +97,4 @@ function createSettingsWindow() {
   return win;
 }
 
-module.exports = { createWidgetWindow, createSettingsWindow, resizeWidget };
+module.exports = { createWidgetWindow, createSettingsWindow, resizeWidget, recenterWidget };
