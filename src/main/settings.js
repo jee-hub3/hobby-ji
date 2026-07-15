@@ -52,6 +52,18 @@ function migrateTheme() {
     const patch = {};
     if (!t.concept) patch.concept = "classic";
     if (!t.bgStyle) patch.bgStyle = bgStyleFrom(t.background); // dark/light → flat-dark/flat-light
+    // aurora 페어 프리셋(v0.1.5~7: "ember-indigo" 등) → 단일 그라데이션 id로 분리 이행
+    const AURORA_PAIR_MAP = {
+      "ember-indigo": { s: "ember", w: "indigo" },
+      "flare-ocean": { s: "flare", w: "ocean" },
+      "lime-violet": { s: "lime", w: "violet" },
+      "gold-teal": { s: "gold", w: "teal" },
+    };
+    // 세션/주간을 독립적으로 이행 — 페어 id인 항목만 분리하고, custom/단일은 그대로 둔다.
+    const sPair = AURORA_PAIR_MAP[t.session && t.session.preset];
+    const wPair = AURORA_PAIR_MAP[t.weekly && t.weekly.preset];
+    if (sPair) patch.session = { ...t.session, preset: sPair.s };
+    if (wPair) patch.weekly = { ...t.weekly, preset: wPair.w };
     if (Object.keys(patch).length) store.set("theme", { ...t, ...patch });
   }
 }

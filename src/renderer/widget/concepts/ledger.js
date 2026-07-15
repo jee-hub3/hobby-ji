@@ -33,17 +33,20 @@
   function build(root, m) {
     let html = '<div class="led-panel led-' + m + '">';
     if (m === "compact") {
+      // 컴팩트는 리셋 정보를 표시하지 않는다 (전 컨셉 공통 규칙) — 구분자 '·'도 제거
       html +=
-        '<div class="led-tick-item led-col-s">세션 <span class="led-tick-num"><span class="led-numval">--</span><span class="led-pctsign">%</span></span> · <span class="led-reset"></span></div>' +
+        '<div class="led-tick-item led-col-s">세션 <span class="led-tick-num"><span class="led-numval">--</span><span class="led-pctsign">%</span></span></div>' +
         '<div class="led-vsep"></div>' +
-        '<div class="led-tick-item led-col-w">주간 <span class="led-tick-num"><span class="led-numval">--</span><span class="led-pctsign">%</span></span> · <span class="led-reset"></span></div>';
+        '<div class="led-tick-item led-col-w">주간 <span class="led-tick-num"><span class="led-numval">--</span><span class="led-pctsign">%</span></span></div>';
     } else if (m === "vertical") {
       html += masthead() + col("s", "세션", "5시간") + '<div class="led-colsep"></div>' + col("w", "주간", "7일") +
+        '<div class="led-scoped" hidden></div>' +
         '<div class="led-foot"><span class="led-foot-l"></span><span class="led-foot-r"></span></div>';
     } else {
       html +=
         masthead() +
         '<div class="led-cols">' + col("s", "세션", "5시간 한도") + col("w", "주간", "7일 한도") + "</div>" +
+        '<div class="led-scoped" hidden></div>' +
         '<div class="led-foot"><span class="led-foot-l"></span><span class="led-foot-r"></span></div>';
     }
     html += "</div>";
@@ -54,6 +57,7 @@
       colW: panel.querySelector(".led-col-w"),
       footL: panel.querySelector(".led-foot-l"),
       footR: panel.querySelector(".led-foot-r"),
+      scoped: panel.querySelector(".led-scoped"),
     };
     mode = m;
   }
@@ -89,6 +93,10 @@
       fillCol(refs.colW, vm.weekly, vm.resetOn ? wReset : "");
       if (refs.colS) refs.colS.hidden = !vm.sessionOn;
       if (refs.colW) refs.colW.hidden = !vm.weeklyOn;
+      if (refs.scoped) {
+        refs.scoped.textContent = vm.scopedText;
+        refs.scoped.hidden = !(vm.scopedOn && vm.scopedText);
+      }
       if (refs.footL) refs.footL.textContent = `마지막 갱신 ${vm.nowClock}`;
       if (refs.footR) refs.footR.textContent = `${vm.dateText} ${vm.weekdayEn}`;
     },

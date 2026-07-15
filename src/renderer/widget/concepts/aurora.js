@@ -55,11 +55,12 @@
   function build(root, m) {
     let html = '<div class="aur-panel aur-' + m + '">' + defsSvg() + '<div class="aur-glow aur-glow-warm"></div><div class="aur-glow aur-glow-cool"></div>';
     if (m === "compact") {
-      html += miniRing("s") + miniRing("w") + '<span class="aur-updated"></span>';
+      // 컴팩트는 리셋 정보를 표시하지 않는다 (설정과 무관, 전 컨셉 공통 규칙)
+      html += miniRing("s") + miniRing("w");
     } else if (m === "vertical") {
-      html += '<div class="aur-gauge">' + dualRing() + "</div>" + brand() + '<div class="aur-info">' + metric("s", "세션") + metric("w", "주간") + "</div>";
+      html += '<div class="aur-gauge">' + dualRing() + "</div>" + brand() + '<div class="aur-info">' + metric("s", "세션") + metric("w", "주간") + '<div class="aur-scoped" hidden></div></div>';
     } else {
-      html += '<div class="aur-gauge">' + dualRing() + '</div><div class="aur-info">' + brand() + metric("s", "세션") + metric("w", "주간") + '<span class="aur-updated"></span></div>';
+      html += '<div class="aur-gauge">' + dualRing() + '</div><div class="aur-info">' + brand() + metric("s", "세션") + metric("w", "주간") + '<div class="aur-scoped" hidden></div><span class="aur-updated"></span></div>';
     }
     html += "</div>";
     root.innerHTML = html;
@@ -76,6 +77,7 @@
       metricS: panel.querySelector(".aur-metric-s"),
       metricW: panel.querySelector(".aur-metric-w"),
       updated: panel.querySelector(".aur-updated"),
+      scoped: panel.querySelector(".aur-scoped"),
     };
     mode = m;
   }
@@ -116,8 +118,6 @@
         if (refs.miniW) { refs.miniW.textContent = `${vm.weekly.pct}%`; sev(refs.miniW, vm.weekly.severity); }
         if (refs.miniWrapS) refs.miniWrapS.hidden = !vm.sessionOn;
         if (refs.miniWrapW) refs.miniWrapW.hidden = !vm.weeklyOn;
-        // 컴팩트 우측은 리셋 카운트다운(세션 기준)
-        if (refs.updated) refs.updated.textContent = `↻ ${vm.session.resetHM}`;
         return;
       }
 
@@ -137,6 +137,10 @@
       fillMetric(refs.metricW, vm.weekly, vm.resetOn);
       if (refs.metricS) refs.metricS.hidden = !vm.sessionOn;
       if (refs.metricW) refs.metricW.hidden = !vm.weeklyOn;
+      if (refs.scoped) {
+        refs.scoped.textContent = vm.scopedText;
+        refs.scoped.hidden = !(vm.scopedOn && vm.scopedText);
+      }
       if (refs.updated) refs.updated.textContent = `↻ ${vm.nowClock}`;
     },
   };

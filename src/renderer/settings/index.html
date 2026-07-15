@@ -30,10 +30,12 @@
         </button>
       </div>
 
-      <h3>색상 적용 대상 <span id="target-hint" class="dim"></span></h3>
-      <div class="segmented" id="color-target">
-        <button type="button" data-value="session">세션</button>
-        <button type="button" data-value="weekly">주간</button>
+      <div id="target-section">
+        <h3>색상 적용 대상 <span id="target-hint" class="dim"></span></h3>
+        <div class="segmented" id="color-target">
+          <button type="button" data-value="session">세션</button>
+          <button type="button" data-value="weekly">주간</button>
+        </div>
       </div>
 
       <h3>프리셋</h3>
@@ -41,9 +43,9 @@
 
       <h3>커스텀 색상</h3>
       <div class="row-group">
-        <label class="color-label">시작 <input type="color" id="custom-from" /></label>
-        <label class="color-label">끝 <input type="color" id="custom-to" /></label>
-        <label class="color-label">
+        <label class="color-label" id="custom-from-label"><span id="custom-from-text">시작</span> <input type="color" id="custom-from" /></label>
+        <label class="color-label" id="custom-to-label"><span id="custom-to-text">끝</span> <input type="color" id="custom-to" /></label>
+        <label class="color-label" id="custom-angle-label">
           방향
           <select id="custom-angle">
             <option value="90">→</option>

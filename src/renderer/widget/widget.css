@@ -317,3 +317,12 @@ body.layout-compact .bar-track {
 body.layout-compact .percent {
   width: auto;
 }
+
+/* ── 한글 단어 단위 줄바꿈(한 글자 고아 줄바꿈 방지) ── */
+.widget {
+  word-break: keep-all;
+}
+.sub,
+#scoped-line {
+  word-break: keep-all;
+}

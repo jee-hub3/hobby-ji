@@ -226,3 +226,23 @@ body[data-size="L"] .led-panel {
   align-self: stretch;
   background: var(--led-hair);
 }
+
+/* ── 모델별(scoped) 라인 ── */
+.led-scoped {
+  font-size: 0.62em;
+  color: var(--led-dim);
+  word-break: keep-all;
+  margin-top: 0.3em;
+}
+
+/* ── 줄바꿈/잘림 방지 ── */
+.led-panel {
+  word-break: keep-all;
+}
+.led-label,
+.led-reset,
+.led-foot-l,
+.led-foot-r,
+.led-tick-item {
+  white-space: nowrap;
+}

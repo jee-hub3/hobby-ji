@@ -19,6 +19,7 @@
         '<div class="br-metric br-metric-s"><span class="br-label">세션</span>' + blocks(10) + '<span class="br-pct">--%</span></div>' +
         '<div class="br-metric br-metric-w"><span class="br-label">주간</span>' + blocks(10) + '<span class="br-pct">--%</span></div>' +
         "</div>" +
+        '<div class="br-scoped" hidden></div>' +
         '<div class="br-footer"></div>';
     } else if (m === "vertical") {
       html +=
@@ -26,7 +27,8 @@
         '<div class="br-towers">' +
         '<div class="br-tower br-metric-s">' + blocks(10) + '<span class="br-pct">--%</span><span class="br-label">세션</span></div>' +
         '<div class="br-tower br-metric-w">' + blocks(10) + '<span class="br-pct">--%</span><span class="br-label">주간</span></div>' +
-        "</div>";
+        "</div>" +
+        '<div class="br-scoped" hidden></div>';
     } else {
       html +=
         '<div class="br-cmetric br-metric-s"><span class="br-label">세션</span>' + blocks(5) + '<span class="br-pct">--%</span></div>' +
@@ -38,6 +40,7 @@
     refs = {
       badge: panel.querySelector(".br-badge"),
       footer: panel.querySelector(".br-footer"),
+      scoped: panel.querySelector(".br-scoped"),
       metricS: panel.querySelector(".br-metric-s"),
       metricW: panel.querySelector(".br-metric-w"),
     };
@@ -78,6 +81,10 @@
         if (vm.weeklyOn) parts.push(`주간 → ${vm.weekly.resetAbsDay}`);
         refs.footer.textContent = parts.join(" · ");
         refs.footer.hidden = !vm.resetOn || parts.length === 0;
+      }
+      if (refs.scoped) {
+        refs.scoped.textContent = vm.scopedText;
+        refs.scoped.hidden = !(vm.scopedOn && vm.scopedText);
       }
     },
   };

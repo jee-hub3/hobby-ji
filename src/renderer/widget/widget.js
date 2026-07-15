@@ -98,6 +98,8 @@ function buildViewModel(payload, settings) {
     return { state: "error", error, msgText: info.text, showActions: info.showActions };
   }
   const fields = settings.layout.fields || [];
+  // 컴팩트 레이아웃은 '초기화 시각' 체크 여부와 무관하게 리셋 정보를 표시하지 않는다.
+  const compact = settings.layout.mode === "compact";
   const block = (blk) => {
     const pct = Math.round((blk && blk.utilizationPercent) || 0);
     const r = resetInfo(blk && blk.resetsAt);
@@ -124,7 +126,7 @@ function buildViewModel(payload, settings) {
     weekly: block(data.weekly),
     sessionOn: fields.includes("session"),
     weeklyOn: fields.includes("weekly"),
-    resetOn: fields.includes("resetTime"),
+    resetOn: fields.includes("resetTime") && !compact,
     scopedOn: fields.includes("modelSpecific"),
     scopedText:
       data.scoped && data.scoped.length > 0
@@ -170,7 +172,8 @@ function classicApplyLayoutFields(layout) {
   const fields = layout.fields || [];
   const sessionOn = fields.includes("session");
   const weeklyOn = fields.includes("weekly");
-  const resetOn = fields.includes("resetTime");
+  // 컴팩트는 리셋 정보를 표시하지 않는다 (전 컨셉 공통 규칙; CSS와 이중 보장)
+  const resetOn = fields.includes("resetTime") && layout.mode !== "compact";
   el.sessionRow.hidden = !sessionOn;
   el.weeklyRow.hidden = !weeklyOn;
   el.sessionReset.hidden = !(sessionOn && resetOn);

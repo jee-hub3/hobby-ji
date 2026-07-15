@@ -2,6 +2,12 @@
   box-sizing: border-box;
 }
 
+/* .color-label 등에 display:flex를 줘도 [hidden]이 우선하도록
+   (방향/끝 색 피커의 컨셉별 숨김이 실제로 동작하게 함) */
+[hidden] {
+  display: none !important;
+}
+
 html,
 body {
   margin: 0;

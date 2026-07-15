@@ -203,3 +203,26 @@ body[data-size="L"] .br-panel {
 .br-compact .br-pct {
   font-size: 1em;
 }
+
+/* ── 모델별(scoped) 라인 ── */
+.br-scoped {
+  font-size: 0.72em;
+  font-weight: 700;
+  color: rgba(18, 18, 18, 0.55);
+  word-break: keep-all;
+}
+
+/* ── 줄바꿈/잘림 방지 ── */
+.br-panel {
+  word-break: keep-all;
+}
+.br-head,
+.br-label,
+.br-pct,
+.br-footer {
+  white-space: nowrap;
+}
+.br-footer {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

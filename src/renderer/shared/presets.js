@@ -11,12 +11,16 @@ const CLASSIC_PRESETS = [
   { id: "aurora", name: "Aurora", from: "#a18cd1", to: "#fbc2eb" },
 ];
 
-// aurora: 세션 그라데이션 × 주간 그라데이션 페어
+// aurora: 단일 그라데이션 8종 — classic처럼 세션/주간에 독립 적용
 const AURORA_PRESETS = [
-  { id: "ember-indigo", name: "Ember × Indigo", session: { from: "#FF8C59", to: "#FFC46B" }, weekly: { from: "#7C5CFF", to: "#5CD6FF" } },
-  { id: "flare-ocean", name: "Flare × Ocean", session: { from: "#FF5E7A", to: "#FF9E6B" }, weekly: { from: "#38C6FF", to: "#6BE0E0" } },
-  { id: "lime-violet", name: "Lime × Violet", session: { from: "#B8E986", to: "#7FD96B" }, weekly: { from: "#9B59FF", to: "#C89BFF" } },
-  { id: "gold-teal", name: "Gold × Teal", session: { from: "#FFC46B", to: "#FFE29B" }, weekly: { from: "#2BD9C8", to: "#6BE8DC" } },
+  { id: "ember", name: "Ember", from: "#FF8C59", to: "#FFC46B" },
+  { id: "indigo", name: "Indigo", from: "#7C5CFF", to: "#5CD6FF" },
+  { id: "flare", name: "Flare", from: "#FF5E7A", to: "#FF9E6B" },
+  { id: "ocean", name: "Ocean", from: "#38C6FF", to: "#6BE0E0" },
+  { id: "lime", name: "Lime", from: "#B8E986", to: "#7FD96B" },
+  { id: "violet", name: "Violet", from: "#9B59FF", to: "#C89BFF" },
+  { id: "gold", name: "Gold", from: "#FFC46B", to: "#FFE29B" },
+  { id: "teal", name: "Teal", from: "#2BD9C8", to: "#6BE8DC" },
 ];
 
 // brutal: 플랫 색 페어 (from == to)
@@ -74,9 +78,6 @@ const BG_RECO = {
   },
 };
 
-// 기존 classic 설정 UI 호환용 별칭
-const GRADIENT_PRESETS = CLASSIC_PRESETS;
-
 const DEFAULT_GRADIENT = { from: "#D97757", to: "#E8A87C", angle: 135 };
 
 // 위젯이 쓰는 색상 해석기: theme + metric('session'|'weekly') → {from, to, angle}.
@@ -98,14 +99,7 @@ function metricColors(theme, kind) {
   if (p.accent) return { from: p.accent, to: p.accent, angle: 135 }; // ledger
   if (p.session && p.weekly) {
     const g = p[kind] || p.session;
-    return { from: g.from, to: g.to, angle: 135 }; // aurora/brutal 페어
+    return { from: g.from, to: g.to, angle: 135 }; // brutal 페어
   }
-  return { from: p.from, to: p.to, angle: 135 }; // classic 단일
-}
-
-// 하위 호환: 예전 시그니처(단일 metricTheme)로 호출하던 곳을 위해 유지.
-function resolveGradient(metricTheme) {
-  if (metricTheme && metricTheme.preset === "custom") return metricTheme.customGradient;
-  const preset = CLASSIC_PRESETS.find((p) => p.id === (metricTheme && metricTheme.preset));
-  return preset ? { from: preset.from, to: preset.to, angle: 135 } : { ...DEFAULT_GRADIENT };
+  return { from: p.from, to: p.to, angle: 135 }; // classic/aurora 단일
 }

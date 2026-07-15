@@ -2,13 +2,17 @@ let settings = null;
 let colorTarget = "session"; // 색상 편집 대상: session | weekly
 let gridConcept = null; // 프리셋 그리드를 마지막으로 그린 컨셉
 
-// 컨셉 전환 시 세션/주간에 채울 기본 프리셋
+// 컨셉 전환 시 세션/주간에 채울 기본 프리셋 (저장된 선택이 없을 때만 사용)
 const CONCEPT_DEFAULTS = {
   classic: { s: "claude", w: "ocean" },
-  aurora: { s: "ember-indigo", w: "ember-indigo" },
+  aurora: { s: "ember", w: "indigo" },
   brutal: { s: "tomato-sky", w: "tomato-sky" },
   ledger: { s: "terracotta", w: "terracotta" },
 };
+
+// classic·aurora는 색상 적용 대상(세션/주간)을 골라 프리셋/커스텀을 개별 적용,
+// brutal(페어)·ledger(단일 잉크)는 대상 구분 없이 한 번에 적용한다.
+const HAS_COLOR_TARGET = { classic: true, aurora: true, brutal: false, ledger: false };
 
 function patchTheme(delta) {
   window.claudeUsage.setSettings({ theme: delta });
@@ -52,15 +56,22 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
 });
 
 // ── 컨셉 선택 ──
+// 떠나는 컨셉의 색 선택(세션/주간)을 theme.perConcept에 저장해두고,
+// 도착 컨셉에 저장분이 있으면 복원, 없으면 그 컨셉의 기본 프리셋 적용.
 document.querySelectorAll("#concept-grid .concept-card").forEach((card) => {
   card.addEventListener("click", () => {
     const concept = card.dataset.concept;
+    const current = (settings.theme && settings.theme.concept) || "classic";
+    if (concept === current) return;
+    const per = { ...((settings.theme && settings.theme.perConcept) || {}) };
+    per[current] = { session: settings.theme.session, weekly: settings.theme.weekly };
+    const saved = per[concept];
     const d = CONCEPT_DEFAULTS[concept] || CONCEPT_DEFAULTS.classic;
-    // 컨셉 + 해당 컨셉 기본 프리셋을 세션/주간에 적용 (레이아웃/투명도/동작은 유지)
     patchTheme({
       concept,
-      session: metricObj(concept, d.s, "session"),
-      weekly: metricObj(concept, d.w, "weekly"),
+      session: saved ? saved.session : metricObj(concept, d.s, "session"),
+      weekly: saved ? saved.weekly : metricObj(concept, d.w, "weekly"),
+      perConcept: per,
     });
   });
 });
@@ -94,9 +105,11 @@ function buildPresetGrid(concept) {
     swatch.style.background = swatchBackground(concept, p);
     swatch.dataset.presetId = p.id;
     swatch.addEventListener("click", () => {
-      if (concept === "classic") {
+      if (HAS_COLOR_TARGET[concept]) {
+        // classic·aurora: 선택된 대상(세션/주간)에만 적용
         patchColorTarget({ preset: p.id });
       } else {
+        // brutal(페어)·ledger(잉크): 세션/주간 동시 적용
         patchTheme({ session: metricObj(concept, p.id, "session"), weekly: metricObj(concept, p.id, "weekly") });
       }
     });
@@ -108,12 +121,41 @@ function buildPresetGrid(concept) {
 const customFrom = document.getElementById("custom-from");
 const customTo = document.getElementById("custom-to");
 const customAngle = document.getElementById("custom-angle");
+const customFromText = document.getElementById("custom-from-text");
+const customToText = document.getElementById("custom-to-text");
+const customToLabel = document.getElementById("custom-to-label");
+const customAngleLabel = document.getElementById("custom-angle-label");
+const targetSection = document.getElementById("target-section");
 
+// 컨셉별 커스텀 색상 의미:
+//  classic — 대상(세션/주간)에 시작/끝/방향 그라데이션
+//  aurora  — 대상에 시작/끝 그라데이션 (방향은 링 SVG 고정이라 없음)
+//  brutal  — 피커 2개가 곧 세션색/주간색 (플랫)
+//  ledger  — 피커 1개 = 잉크색 (세션/주간 공통)
 function pushCustomGradient() {
-  patchColorTarget({
-    preset: "custom",
-    customGradient: { from: customFrom.value, to: customTo.value, angle: Number(customAngle.value) },
-  });
+  const concept = (settings.theme && settings.theme.concept) || "classic";
+  if (concept === "classic") {
+    patchColorTarget({
+      preset: "custom",
+      customGradient: { from: customFrom.value, to: customTo.value, angle: Number(customAngle.value) },
+    });
+  } else if (concept === "aurora") {
+    patchColorTarget({
+      preset: "custom",
+      customGradient: { from: customFrom.value, to: customTo.value, angle: 135 },
+    });
+  } else if (concept === "brutal") {
+    patchTheme({
+      session: { preset: "custom", customGradient: { from: customFrom.value, to: customFrom.value, angle: 135 } },
+      weekly: { preset: "custom", customGradient: { from: customTo.value, to: customTo.value, angle: 135 } },
+    });
+  } else {
+    const ink = customFrom.value;
+    patchTheme({
+      session: { preset: "custom", customGradient: { from: ink, to: ink, angle: 135 } },
+      weekly: { preset: "custom", customGradient: { from: ink, to: ink, angle: 135 } },
+    });
+  }
 }
 customFrom.addEventListener("input", pushCustomGradient);
 customTo.addEventListener("input", pushCustomGradient);
@@ -207,20 +249,39 @@ function renderForm(s) {
 
   if (gridConcept !== concept) buildPresetGrid(concept);
 
+  // 컨셉별 색상 UI 구성:
+  //  - 색상 적용 대상: classic·aurora만 표시
+  //  - 방향: classic만 표시
+  //  - 끝 색: brutal(주간색으로 재사용)·classic·aurora 표시, ledger 숨김
+  const hasTarget = !!HAS_COLOR_TARGET[concept];
+  targetSection.hidden = !hasTarget;
+  customAngleLabel.hidden = concept !== "classic";
+  customToLabel.hidden = concept === "ledger";
+  customFromText.textContent = concept === "brutal" ? "세션" : concept === "ledger" ? "잉크" : "시작";
+  customToText.textContent = concept === "brutal" ? "주간" : "끝";
+
   const metric = s.theme[colorTarget];
   targetHint.textContent = colorTarget === "session" ? "(세션)" : "(주간)";
   document.querySelectorAll("#color-target button").forEach((btn) => {
     btn.classList.toggle("selected", btn.dataset.value === colorTarget);
   });
 
-  const activePreset = concept === "classic" ? metric.preset : s.theme.session.preset;
+  const activePreset = hasTarget ? metric.preset : s.theme.session.preset;
   presetGrid.querySelectorAll(".preset-swatch").forEach((elm) => {
     elm.classList.toggle("selected", elm.dataset.presetId === activePreset);
   });
 
-  if (document.activeElement !== customFrom) customFrom.value = metric.customGradient.from;
-  if (document.activeElement !== customTo) customTo.value = metric.customGradient.to;
-  if (document.activeElement !== customAngle) customAngle.value = String(metric.customGradient.angle);
+  // 커스텀 피커 값: classic·aurora=대상 metric, brutal=세션/주간 from, ledger=세션 from(잉크)
+  // customGradient가 누락된 옛 설정도 안전하게 처리 (옵셔널 체이닝 + 기본색 폴백)
+  const DEF = "#D97757";
+  const mc = metric && metric.customGradient;
+  const sc = s.theme.session && s.theme.session.customGradient;
+  const wc = s.theme.weekly && s.theme.weekly.customGradient;
+  const fromVal = (hasTarget ? mc && mc.from : sc && sc.from) || DEF;
+  const toVal = (concept === "brutal" ? wc && wc.from : hasTarget ? mc && mc.to : sc && sc.to) || DEF;
+  if (document.activeElement !== customFrom) customFrom.value = fromVal;
+  if (document.activeElement !== customTo) customTo.value = toVal;
+  if (document.activeElement !== customAngle) customAngle.value = String((mc && mc.angle) ?? 135);
 
   // 배경 스타일은 classic 전용
   const bgSection = document.getElementById("bgstyle-section");

@@ -261,3 +261,22 @@ body[data-size="L"] .aur-panel {
   font-size: 0.66em;
   color: rgba(255, 247, 240, 0.5);
 }
+
+/* ── 모델별(scoped) 라인 ── */
+.aur-scoped {
+  font-size: 0.66em;
+  color: rgba(255, 247, 240, 0.5);
+  word-break: keep-all;
+}
+
+/* ── 줄바꿈/잘림 방지: 한글 단어 단위 줄바꿈, 단문 정보는 한 줄 고정 ── */
+.aur-panel {
+  word-break: keep-all;
+}
+.aur-brand,
+.aur-mlabel,
+.aur-mabs,
+.aur-mrel,
+.aur-updated {
+  white-space: nowrap;
+}

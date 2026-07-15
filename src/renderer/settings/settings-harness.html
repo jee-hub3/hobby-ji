@@ -19,18 +19,20 @@
         <button type="button" class="concept-card" data-concept="brutal"><span class="concept-prev cp-brutal"></span><span class="concept-name">Neo Brutal</span></button>
         <button type="button" class="concept-card" data-concept="ledger"><span class="concept-prev cp-ledger"></span><span class="concept-name">Ledger</span></button>
       </div>
-      <h3>색상 적용 대상 <span id="target-hint" class="dim"></span></h3>
-      <div class="segmented" id="color-target">
-        <button type="button" data-value="session">세션</button>
-        <button type="button" data-value="weekly">주간</button>
+      <div id="target-section">
+        <h3>색상 적용 대상 <span id="target-hint" class="dim"></span></h3>
+        <div class="segmented" id="color-target">
+          <button type="button" data-value="session">세션</button>
+          <button type="button" data-value="weekly">주간</button>
+        </div>
       </div>
       <h3>프리셋</h3>
       <div class="preset-grid" id="preset-grid"></div>
       <h3>커스텀 색상</h3>
       <div class="row-group">
-        <label class="color-label">시작 <input type="color" id="custom-from" /></label>
-        <label class="color-label">끝 <input type="color" id="custom-to" /></label>
-        <label class="color-label">방향 <select id="custom-angle"><option value="90">→</option><option value="180">↓</option><option value="135">↘</option></select></label>
+        <label class="color-label" id="custom-from-label"><span id="custom-from-text">시작</span> <input type="color" id="custom-from" /></label>
+        <label class="color-label" id="custom-to-label"><span id="custom-to-text">끝</span> <input type="color" id="custom-to" /></label>
+        <label class="color-label" id="custom-angle-label">방향 <select id="custom-angle"><option value="90">→</option><option value="180">↓</option><option value="135">↘</option></select></label>
       </div>
       <div id="bgstyle-section">
         <h3>배경 스타일</h3>
@@ -78,7 +80,7 @@
       (function () {
         const q = new URLSearchParams(location.search);
         const concept = q.get("concept") || "classic";
-        const PR = { classic: { s: "claude", w: "ocean" }, aurora: { s: "ember-indigo", w: "ember-indigo" }, brutal: { s: "tomato-sky", w: "tomato-sky" }, ledger: { s: "terracotta", w: "terracotta" } }[concept];
+        const PR = { classic: { s: "claude", w: "ocean" }, aurora: { s: "ember", w: "indigo" }, brutal: { s: "tomato-sky", w: "tomato-sky" }, ledger: { s: "terracotta", w: "terracotta" } }[concept];
         const mockSettings = {
           theme: { concept, session: { preset: PR.s, customGradient: { from: "#D97757", to: "#E8A87C", angle: 135 } }, weekly: { preset: PR.w, customGradient: { from: "#667eea", to: "#64b5f6", angle: 135 } }, bgStyle: "flat-dark", opacity: 0.92 },
           layout: { mode: "horizontal", size: "M", fields: ["session", "weekly", "resetTime"] },
