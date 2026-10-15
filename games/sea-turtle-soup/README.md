@@ -6,6 +6,7 @@
 
 - **바로 플레이:** https://claude.ai/artifact/7ZgUfpDt8tGEBi67SmCatu
 - **로컬 플레이:** `index.html`을 브라우저로 열면 됩니다.
+- **웹 서비스판(베타):** [`web/`](web/README.md) — claude.ai 밖에서 누구나 접속하는 독립 서비스. AI 진행자는 운영자의 API 키로 돌고, 정답은 서버에만 둡니다.
 
 ## 진행 방식
 

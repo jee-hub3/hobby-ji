@@ -1,0 +1,39 @@
+// 바다거북 스프 웹 서비스 (Cloudflare Workers + 정적 페이지 + D1)
+// 처음 배포 전에: docs/DEPLOY.md 순서대로 D1을 만들고 database_id를 아래에 넣은 뒤, 비밀값 3개를 등록하세요.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sea-turtle-soup",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sea-turtle-soup",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    // 진행자 모델. 정확도 시험(eval/) 결과를 보고 바꾼다.
+    "MODEL_ASK": "claude-haiku-5-5",
+    "MODEL_GUESS": "claude-sonnet-5-5",
+    "EFFORT_ASK": "low",
+    "EFFORT_GUESS": "medium",
+    // 베타 비용 방어선
+    "AI_ENABLED": "true",
+    "AI_DAILY_BUDGET_USD": "5",
+    "AI_DEVICE_DAILY_CALLS": "150",
+    "AI_IP_DAILY_CALLS": "400",
+    "AI_DEVICE_PER_MINUTE": "8",
+    "ALL_ACCESS": "false"
+  },
+  // 비밀값(wrangler secret put): ANTHROPIC_API_KEY, SESSION_SECRET, ADMIN_TOKEN
+  "triggers": { "crons": ["0 19 * * *"] },
+  "observability": { "enabled": true }
+}

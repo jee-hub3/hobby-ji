@@ -1,0 +1,48 @@
+// 예산 소진 테스트: 하루 예산을 아주 작게 두고, 첫 AI 호출 뒤에는 AI 진행이 멈추고 친구 진행으로 안내되는지 본다.
+import { spawn, execSync } from 'node:child_process';
+import { createRequire } from 'node:module';
+import fs from 'node:fs';
+import path from 'node:path';
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.env.PW || path.join(execSync('npm root -g').toString().trim(), 'playwright'));
+const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const OUT = path.join(ROOT, 'test/.out-budget');
+const BASE = 'http://localhost:8798';
+fs.rmSync(OUT, { recursive: true, force: true }); fs.mkdirSync(OUT, { recursive: true });
+const DEV_VARS = path.join(ROOT, '.dev.vars'), DEV_BAK = DEV_VARS + '.before-test';
+if (fs.existsSync(DEV_VARS) && !fs.existsSync(DEV_BAK)) fs.renameSync(DEV_VARS, DEV_BAK);
+process.on('exit', () => { try { fs.rmSync(DEV_VARS, { force: true }); if (fs.existsSync(DEV_BAK)) fs.renameSync(DEV_BAK, DEV_VARS); } catch (e) { /* best effort */ } });
+fs.writeFileSync(path.join(ROOT, '.dev.vars'), ['ANTHROPIC_API_KEY=sk-test-not-real', 'ANTHROPIC_BASE_URL=http://127.0.0.1:8791', 'SESSION_SECRET=budget-secret-0123456789', 'AI_DAILY_BUDGET_USD=0.000001', 'AI_DEVICE_PER_MINUTE=1000'].join('\n') + '\n');
+const env = { ...process.env, WRANGLER_SEND_METRICS: 'false', NO_COLOR: '1' };
+const procs = [];
+const run = (cmd, args, name) => { const p = spawn(cmd, args, { cwd: ROOT, env, stdio: ['ignore', fs.openSync(path.join(OUT, name + '.log'), 'w'), fs.openSync(path.join(OUT, name + '.log'), 'a')], detached: true }); procs.push(p); };
+const cleanup = () => { for (const p of procs) { try { process.kill(-p.pid, 'SIGTERM'); } catch (e) { /* gone */ } } };
+const results = [];
+const check = (n, ok, x = '') => results.push(`${ok ? 'PASS' : 'FAIL'} ${n}${x ? ' — ' + x : ''}`);
+(async () => {
+  execSync(`npx wrangler d1 migrations apply DB --local --persist-to ${path.join(OUT, 'state')}`, { cwd: ROOT, env, stdio: 'ignore' });
+  run('node', ['test/stub-anthropic.js', '8791', path.join(OUT, 'stub.jsonl')], 'stub');
+  run('npx', ['wrangler', 'dev', '--port', '8798', '--ip', '127.0.0.1', '--persist-to', path.join(OUT, 'state'), '--show-interactive-dev-session=false'], 'wrangler');
+  for (let i = 0; i < 120; i++) { try { if ((await fetch(BASE + '/api/config')).ok) break; } catch (e) { /* not yet */ } await new Promise(r => setTimeout(r, 500)); }
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  await page.goto(BASE + '/');
+  await page.waitForSelector('#menu-cols button');
+  await page.click('.dish-featured');
+  await page.waitForSelector('#play-view:not([hidden])');
+  const ask = async t => { await page.fill('#q-input', t); await page.press('#q-input', 'Enter'); await page.waitForFunction(() => !document.querySelector('#log .pending'), null, { timeout: 15000 }); };
+  await ask('첫 질문입니다 #1');
+  check('the first call goes through', (await page.$$('#log .entry')).length >= 1);
+  await ask('두 번째 질문입니다');
+  const status = await page.textContent('#composer-status');
+  check('the next call is stopped by the daily budget', status.includes('소진'), status);
+  check('the page switches to the friend host', await page.isVisible('[data-answer="yes"]'));
+  const cfg = await (await page.request.get(BASE + '/api/config')).json();
+  check('config reports the budget as the reason', cfg.ai.open === false && cfg.ai.reason === 'budget', JSON.stringify(cfg.ai));
+  await browser.close();
+  cleanup();
+  console.log(results.join('\n'));
+  const failed = results.filter(r => r.startsWith('FAIL')).length;
+  console.log(failed ? `BUDGET: ${failed} FAILED` : `BUDGET: ALL PASS (${results.length})`);
+  process.exit(failed ? 1 : 0);
+})().catch(e => { console.error('BUDGET CRASHED:', e); console.log(results.join('\n')); cleanup(); process.exit(1); });

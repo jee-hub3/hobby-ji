@@ -1,0 +1,27 @@
+{
+  "name": "sea-turtle-soup-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "바다거북 스프 웹 서비스: 정적 페이지 + Cloudflare Worker API (AI 진행자, 게임 상태, 사용량 한도)",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "deploy": "wrangler deploy",
+    "test:engine": "node test/engine.test.js",
+    "test:e2e": "node test/e2e.js",
+    "test": "npm run test:engine && npm run test:e2e && npm run test:budget",
+    "eval": "node eval/run.js",
+    "test:budget": "node test/budget.js",
+    "eval:dry": "node eval/run.js --dry",
+    "images": "node tools/render-images.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.134.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "wrangler": "^4.151.0"
+  }
+}
