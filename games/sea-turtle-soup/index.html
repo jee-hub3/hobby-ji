@@ -268,7 +268,7 @@ h1 {
 .log-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
 .log-head h2 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: var(--t-xl); }
 .log-count { font-size: var(--t-sm); color: var(--muted); font-variant-numeric: tabular-nums; }
-.log { list-style: none; margin: 0; padding: 0; }
+.log { list-style: none; margin: 0; padding: 0; overflow-x: hidden; overflow-x: clip; }
 .log-empty { margin: 0; padding: 22px 4px; color: var(--muted); font-size: var(--t-sm); display: grid; gap: 4px; }
 .log-empty strong { color: var(--ink); font-family: var(--f-story); font-weight: 400; font-size: var(--t-md); }
 
@@ -474,8 +474,8 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
         <h2 id="howto-title">이렇게 먹어요</h2>
         <ol class="steps">
           <li><strong>문제를 읽어요</strong><span>앞뒤가 안 맞는 이상한 상황이 하나 주어집니다.</span></li>
-          <li><strong>예·아니오로 물어요</strong><span>진행자는 예, 아니오, 상관없음, 부분적으로 중 하나로만 답해요.</span></li>
-          <li><strong>진상을 맞혀요</strong><span>전말을 추리해 제출하세요. 핵심 단서를 모두 맞히면 완식!</span></li>
+          <li><strong>예·아니오로 물어요</strong><span>진행자는 예, 아니오, 상관없음, 부분적으로 중 하나로 답해요. 예·아니오로 답할 수 없는 질문에는 ‘다시 질문’이라고 답해요.</span></li>
+          <li><strong>진상을 맞혀요</strong><span>전말을 처음부터 끝까지 한 번에 적어 내세요. 핵심 단서가 모두 들어 있으면 완식!</span></li>
         </ol>
       </section>
       <section class="host-pick" aria-labelledby="host-title">
@@ -533,7 +533,7 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
             <span id="clue-count" class="clue-count"></span>
           </div>
           <div id="clue-dots" class="clue-dots" role="img"></div>
-          <p class="tool-note">진상을 이루는 핵심 사실 중 질문으로 확인한 개수예요.</p>
+          <p class="tool-note">진상을 이루는 핵심 사실 중 질문이나 추리로 확인한 개수예요.</p>
         </section>
 
         <section class="tool" aria-labelledby="hint-title">
@@ -657,7 +657,7 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
   const PUZZLES = [
     {
       id: 'turtle-soup', level: 'hot', title: '바다거북 스프',
-      teaser: '한 숟갈 뜨더니 물었다. “이거 정말 바다거북 스프 맞습니까?”',
+      teaser: '한 숟갈 뜨더니 물었다. “이게 정말 바다거북 스프입니까?”',
       story: [
         '어느 바닷가 레스토랑. 한 남자가 ‘바다거북 스프’를 주문했다. 한 숟갈 떠먹은 남자는 셰프를 불러 물었다.',
         '“실례지만, 이게 정말 바다거북 스프입니까?”\n“네, 틀림없는 바다거북 스프입니다.”',
@@ -678,7 +678,7 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
       hints: [
         '남자가 바다거북 스프를 먹은 건 오늘이 처음이 아닙니다. 적어도 남자는 그렇게 믿고 있었습니다.',
         '남자는 몇 년 전 바다에서 큰 사고를 겪었습니다.',
-        '오늘 먹은 스프는 진짜였습니다. 문제는 예전에 먹은 ‘그 스프’입니다.',
+        '예전에 먹은 ‘그 스프’는 바다거북으로 끓인 것이 아니었습니다. 그때 함께 있던 일행이 모두 살아 돌아온 것은 아닙니다.',
       ],
     },
     {
@@ -736,7 +736,8 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
       ],
       truth: [
         '남자는 섬의 등대지기였다. 몹시 피곤했던 그날 밤, 남자는 방의 불을 끄면서 무심코 등대의 불까지 꺼 버렸다.',
-        '어둠 속에서 섬 근처를 지나던 여객선은 등대 불빛을 보지 못한 채 암초에 부딪혀 침몰했다.',
+        '어둠 속에서 섬 근처를 지나던 여객선은 등대 불빛을 보지 못한 채 암초에 부딪혀 침몰했고, 수십 명이 목숨을 잃었다.',
+        '다음 날 아침 라디오에서 섬 앞바다의 여객선 침몰 소식을 들은 남자는, 등대 불이 꺼져 있었던 탓이라는 걸 깨달았다.',
       ],
       keys: [
         '남자는 등대지기였고, 그가 끈 불은 등대 불이다.',
@@ -780,7 +781,7 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
       ],
       truth: [
         '그는 산불이 난 날 바다에서 스쿠버다이빙을 하고 있었다.',
-        '산불을 끄러 출동한 소방 헬기가 바다에 커다란 물주머니를 담가 물을 퍼 올릴 때, 근처에서 잠수 중이던 그도 물과 함께 퍼 올려졌다. 헬기는 그대로 날아가 불타는 숲 위에 물을 쏟아부었고, 그는 높은 곳에서 떨어져 숨졌다.',
+        '산불을 끄러 출동한 소방 헬기가 바다에 커다란 물주머니를 담가 물을 퍼 올릴 때, 마침 그 근처 수면 가까이에서 잠수 중이던 그도 물과 함께 퍼 올려졌다. 헬기는 그대로 날아가 불타는 숲 위에 물을 쏟아부었고, 그는 높은 곳에서 떨어져 숨졌다.',
       ],
       keys: [
         '그는 바다에서 다이빙을 하고 있었다.',
@@ -789,13 +790,13 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
       ],
       hints: [
         '그는 죽기 직전까지 자기가 숲에 가게 될 줄 몰랐습니다.',
-        '그날 아침 그가 있던 곳은 숲이 아니라 바다였습니다.',
+        '그날 그가 처음 있던 곳은 숲이 아니라 바다였습니다.',
         '산불을 끄려면 엄청난 양의 물이 필요합니다. 그 물은 어디서 올까요?',
       ],
     },
     {
       id: 'voicemail', level: 'medium', title: '받지 않는 번호',
-      teaser: '1년 동안 매일 건 번호, 처음으로 누군가 받았다.',
+      teaser: '1년 넘게 매일 건 번호, 처음으로 누군가 받았다.',
       story: [
         '여자는 1년 넘게 매일 밤 같은 번호로 전화를 건다. 아무도 받지 않는다는 걸 알면서도, 신호가 끝날 때까지 휴대폰을 귀에 대고 있다.',
         '그러던 어느 날 밤, 처음으로 누군가 전화를 받았다.\n“여보세요?”',
@@ -803,8 +804,8 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
         '왜일까?',
       ],
       truth: [
-        '그 번호는 1년 전 세상을 떠난 엄마의 휴대폰 번호였다. 여자는 차마 해지하지 못한 엄마 번호로 매일 전화를 걸어, 신호 끝에 흘러나오는 엄마 목소리의 음성사서함 안내를 들었다.',
-        '그런데 결국 번호가 해지되어 다른 사람에게 넘어갔고, 그날 처음으로 낯선 사람이 전화를 받았다. 여자는 이제 다시는 엄마 목소리를 들을 수 없다는 걸 깨달았다.',
+        '그 번호는 1년여 전 세상을 떠난 엄마의 휴대폰 번호였다. 여자는 차마 해지하지 못한 엄마 번호로 매일 전화를 걸어, 신호 끝에 흘러나오는 엄마 목소리의 음성사서함 안내를 들었다.',
+        '그런데 엄마 명의의 휴대폰을 정리하던 다른 가족이 결국 번호를 해지했고, 그 번호는 다른 사람에게 새로 배정되었다. 그리고 그날 밤, 처음으로 낯선 사람이 전화를 받았다. 여자는 이제 다시는 엄마 목소리를 들을 수 없다는 걸 깨달았다.',
       ],
       keys: [
         '그 번호는 세상을 떠난 가족(엄마)의 번호다.',
@@ -849,8 +850,8 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
         '할머니는 왜 매일 정류장에 나왔고, 버스 기사는 어떻게 할머니를 찾아냈을까?',
       ],
       truth: [
-        '그 버스 기사는 할머니의 아들이었다. 새벽부터 밤까지 운전하느라 얼굴 볼 틈이 없는 아들을 보려고, 할머니는 매일 아침 아들의 버스가 지나가는 시간에 맞춰 정류장에 나와 앉아 있었다. 아들도 정류장을 지날 때마다 창밖의 엄마에게 손을 흔들었다.',
-        '그날 엄마가 보이지 않자 아들은 불길한 예감이 들었고, 운행을 마치자마자 집으로 달려가 쓰러진 엄마를 발견했다.',
+        '그 버스 기사는 할머니의 아들이었다. 따로 사는 데다 새벽부터 밤까지 운전하느라 얼굴 볼 틈이 없는 아들을 보려고, 할머니는 매일 아침 아들의 버스가 지나가는 시간에 맞춰 정류장에 나와 앉아 있었다. 아들도 정류장을 지날 때마다 창밖의 엄마에게 손을 흔들었다.',
+        '그날 엄마가 보이지 않자 아들은 불길한 예감이 들었다. 전화를 걸어도 엄마가 받지 않았고, 아들은 그 회차 운행을 마치자마자 집으로 달려가 쓰러진 엄마를 발견했다.',
       ],
       keys: [
         '버스 기사는 할머니의 아들(가족)이다.',
@@ -869,10 +870,11 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
       story: [
         '어느 날 저녁, 가족들이 들고 온 케이크에는 초가 딱 하나 꽂혀 있었다.',
         '“첫 번째 생일 축하해!”\n가족들의 외침에 남자는 눈시울을 붉혔다.',
-        '남자는 올해 마흔두 살이고, 그가 태어난 날은 오늘이 아니다. 무슨 일일까?',
+        '남자는 올해 마흔두 살이고, 그가 태어난 날은 오늘이 아니다.',
+        '무슨 일일까?',
       ],
       truth: [
-        '정확히 1년 전 오늘, 남자는 심장이 멎어 쓰러졌다가 심장 이식 수술을 받고 기적처럼 살아났다.',
+        '정확히 1년 전 오늘, 심장병으로 이식만 기다리며 생사의 갈림길에 서 있던 남자는 기적처럼 맞는 기증자가 나타나 심장 이식 수술을 받았고, 다시 살아났다.',
         '가족들은 남자가 다시 살게 된 그날을 ‘두 번째 생일’로 정했다. 오늘은 그 새 생일을 처음 맞는 날이라 초가 하나였다. 남자는 이름 모를 기증자를 떠올리며 눈시울을 붉혔다.',
       ],
       keys: [
@@ -894,8 +896,8 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
         '무슨 일이 있었을까?',
       ],
       truth: [
-        '남자는 몇 사람과 함께 열기구를 타고 사막을 건너던 중이었다. 열기구가 점점 가라앉자 짐을 모두 내던졌지만 소용이 없었고, 결국 누군가 한 명이 뛰어내려야 했다.',
-        '그들은 성냥개비로 제비를 뽑았다. 한 개만 반으로 부러뜨려 섞어 두고, 그걸 뽑은 사람이 내리기로 한 것이다. 부러진 성냥을 뽑은 남자는 열기구에서 뛰어내렸다.',
+        '남자는 몇 사람과 함께 열기구를 타고 사막을 건너던 중이었다. 열기구가 점점 가라앉자 짐을 모두 내던졌지만 소용이 없었고, 이대로라면 끝없는 사막 한가운데로 추락해 모두 죽을 판이었기에, 결국 누군가 한 명이 뛰어내려야 했다.',
+        '그들은 성냥개비로 제비를 뽑았다. 한 개만 반으로 부러뜨려 섞어 두고, 그걸 뽑은 사람이 내리기로 한 것이다. 부러진 성냥을 뽑은 남자는 그 성냥을 쥔 채 열기구에서 뛰어내렸다. 가벼워진 열기구는 다시 떠올랐고, 나머지 사람들은 살아남았다. 남자는 하늘에서 떨어졌기 때문에 주변 모래에 발자국이 남지 않았다.',
       ],
       keys: [
         '남자는 여러 사람과 함께 열기구를 타고 하늘을 날고 있었다.',
@@ -918,7 +920,7 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
       ],
       truth: [
         '여자는 눈을 가린 채 높은 곳의 줄 위를 걷는 곡예사였다. 눈을 가리면 줄이 어디서 끝나는지 알 수 없기에, 여자는 음악이 끝나는 순간을 ‘줄 끝에 도착했다’는 신호로 삼아 왔다.',
-        '그런데 그날 밤 음향 담당의 실수로 음악이 예정보다 일찍 멈췄다. 여자는 줄 끝에 다 왔다고 믿고 발을 내디뎠다가 아래로 떨어졌다.',
+        '그런데 그날 밤 음향 담당이 실수로 음악을 예정보다 일찍 껐다. 여자는 줄 끝에 다 왔다고 믿고 발판으로 내려서듯 발을 내디뎠다가, 허공을 밟고 아래로 떨어졌다.',
       ],
       keys: [
         '여자는 눈을 가리고 높은 곳에서 줄타기를 하고 있었다.',
@@ -1013,7 +1015,7 @@ textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; bo
   function questionPrompt(p, g, q) {
     const past = g.log
       .filter(e => e.kind === 'q' && e.text)
-      .slice(-12)
+      .slice(-40)
       .map(e => `- Q: ${e.text} → ${(ANSWERS[e.a] || {}).label || e.a}`)
       .join('\n') || '(없음)';
     return `당신은 상황 추리 게임 '바다거북 스프'의 진행자입니다. 플레이어는 [문제]만 읽고, 예/아니오로 답할 수 있는 질문을 던져 [진상]을 알아내려 합니다.
@@ -1078,7 +1080,12 @@ ${brief(p)}
     if (!res || typeof res !== 'object') throw badReply();
     const verdict = String(res.verdict || '').trim().toLowerCase();
     if (!VERDICTS[verdict]) throw badReply();
-    return { verdict, comment: cleanText(res.comment, 160), matched: cleanNums(res.matched, p.keys.length) };
+    const matched = cleanNums(res.matched, p.keys.length);
+    // 'correct'인데 맞힌 단서가 일부뿐이면 규칙대로 강등하고, 진상이 담겼을 수 있는 comment는 버린다
+    if (verdict === 'correct' && matched.length && matched.length < p.keys.length) {
+      return { verdict: matched.length * 2 >= p.keys.length ? 'close' : 'wrong', comment: '', matched };
+    }
+    return { verdict, comment: cleanText(res.comment, 160), matched };
   }
 
   function errorCopy(e) {
