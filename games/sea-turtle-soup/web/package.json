@@ -11,11 +11,17 @@
     "deploy": "wrangler deploy",
     "test:engine": "node test/engine.test.js",
     "test:e2e": "node test/e2e.js",
-    "test": "npm run test:engine && npm run test:e2e && npm run test:budget",
+    "test": "npm run test:engine && npm run test:e2e && npm run test:budget && npm run test:music",
     "eval": "node eval/run.js",
     "test:budget": "node test/budget.js",
+    "test:music": "node test/music.js",
     "eval:dry": "node eval/run.js --dry",
-    "images": "node tools/render-images.js"
+    "images": "node tools/render-images.js",
+    "music:sync": "node tools/sync-music.js",
+    "music:render": "node tools/render-music.js",
+    "music:analyze": "python3 tools/analyze-music.py",
+    "music:check": "node tools/render-music.js --set analysis && python3 tools/analyze-music.py",
+    "music:previews": "node tools/render-music.js --set preview --jobs 1 && python3 tools/analyze-music.py --previews music-out/previews"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.134.0",
