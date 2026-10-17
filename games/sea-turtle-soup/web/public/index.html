@@ -599,7 +599,7 @@ a { color: var(--link); }
 .clock.over .clock-time, .clock.over .clock-note { color: var(--no); }
 .clock.paused .clock-time { color: var(--muted); }
 .clock-bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; overflow: hidden; pointer-events: none; }
-.clock-bar span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--lamp-bright) 45%, transparent), var(--lamp-bright)); transition: width 1s linear; }
+.clock-bar span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--lamp-bright) 45%, transparent), var(--lamp-bright)); }
 .topbar:has(.clock.over) .clock-bar span { background: var(--no); }
 .host-chip.in-bar { height: 36px; padding: 0 14px 0 6px; }
 
@@ -655,9 +655,8 @@ a { color: var(--link); }
 .story { display: grid; gap: .85em; }
 .story p { margin: 0; white-space: pre-line; }
 .scene { font-size: 18px; line-height: 1.85; letter-spacing: -0.005em; color: var(--ink); max-width: 34em; }
-.problem.turn .ch-head, .problem.turn .scene-card { animation: panelIn .5s var(--ease-out) both; }
-.problem.turn .scene-card { animation-delay: .06s; }
-@keyframes panelIn { from { opacity: 0; transform: translateY(12px); filter: blur(4px); } }
+.problem.turn .ch-head, .problem.turn .scene-card { animation: panelIn .24s var(--ease-out) both; }
+@keyframes panelIn { from { opacity: 0; } }
 .ch-question { margin-top: 20px; }
 .ch-question .bubble.host { max-width: 100%; padding: 14px 18px; display: grid; gap: 4px; }
 .ch-question .q-label { font-size: 13px; font-weight: 700; color: var(--lamp); }
@@ -684,7 +683,7 @@ a { color: var(--link); }
 .w-chev { width: 16px; height: 16px; color: var(--muted); transition: transform .2s var(--ease-std); }
 .world[open] .w-chev { transform: rotate(90deg); }
 .world-body { padding: 0 20px 24px; display: grid; gap: 28px; }
-.world[open] .world-body { animation: fadeUp .4s var(--ease-out) both; }
+.world[open] .world-body { animation: fadeIn .2s var(--ease-out) both; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } }
 .w-index {
   position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; gap: 6px;
@@ -740,7 +739,7 @@ a { color: var(--link); }
 .tool-note { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
 .hint-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.hint-open { display: grid; gap: 4px; max-width: 100%; padding: 12px 16px; border-radius: 20px 20px 20px 6px; background: var(--host); color: var(--host-ink); box-shadow: inset 0 0 0 1px var(--host-edge); animation: fadeUp .4s var(--ease-out) both; }
+.hint-open { display: grid; gap: 4px; max-width: 100%; padding: 12px 16px; border-radius: 20px 20px 20px 6px; background: var(--host); color: var(--host-ink); box-shadow: inset 0 0 0 1px var(--host-edge); }
 .hint-open p { margin: 0; font-size: 15px; line-height: 1.65; color: var(--host-ink); }
 .hint-no { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--lamp); }
 .hint-no .ic { width: 14px; height: 14px; }
@@ -761,7 +760,7 @@ a { color: var(--link); }
 .host-panel-title { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; }
 .host-panel-title .ic { color: var(--lamp); }
 #host-toggle { min-height: 36px; padding: 0 14px; font-size: 13px; }
-.host-body { display: grid; gap: 14px; animation: fadeUp .4s var(--ease-out) both; }
+.host-body { display: grid; gap: 14px; animation: fadeIn .2s var(--ease-out) both; }
 .host-warn { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; background: var(--no-soft); color: var(--no); font-size: 13px; font-weight: 700; }
 .host-warn .ic { width: 16px; height: 16px; }
 .host-truth { font-size: 15px; line-height: 1.75; display: grid; gap: .6em; }
@@ -837,7 +836,7 @@ a { color: var(--link); }
 .thinking-label { align-self: center; font-size: 12px; color: var(--muted); }
 
 /* motion: question sent → typing → answer */
-.pending .msg-out .bubble, .fresh .msg-out .bubble { animation: sendIn .28s var(--ease-out) both; transform-origin: 100% 100%; }
+.pending .msg-out .bubble { animation: sendIn .28s var(--ease-out) both; transform-origin: 100% 100%; }
 .fresh.by-host .msg-out .bubble { animation: sendIn .28s var(--ease-out) both; }
 @keyframes sendIn { from { opacity: 0; transform: translateY(12px) scale(.96); } }
 .pending .msg-in { animation: fadeIn .2s .12s var(--ease-out) both; }
@@ -894,7 +893,8 @@ a { color: var(--link); }
 .entry-chapter.fresh { animation: unfold .7s var(--ease-out) both; }
 .entry-chapter.fresh .dv-num { animation: numRise .9s .1s var(--ease-out) both; }
 .entry-chapter.fresh .dv-label, .entry-chapter.fresh h3, .entry-chapter.fresh .dv-sub { animation: fadeUp .5s .25s var(--ease-out) both; }
-.entry-chapter.fresh .dv-body, .entry-chapter.fresh .dv-next { animation: fadeUp .5s .4s var(--ease-out) both; }
+.entry-chapter.fresh .dv-body { animation: fadeIn .24s .4s var(--ease-out) both; }
+.entry-chapter.fresh .dv-next { animation: fadeUp .5s .4s var(--ease-out) both; }
 @keyframes unfold { from { clip-path: inset(0 0 100% 0 round 28px); } to { clip-path: inset(0 round 28px); } }
 @keyframes numRise { from { opacity: 0; transform: translateY(40px); } }
 
@@ -1721,7 +1721,7 @@ textarea:disabled { opacity: .6; }
     s.innerHTML = `<svg viewBox="0 0 16 16">${ICONS[name] || ''}</svg>`;
     return s;
   }
-  const reduceMotion = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const reduceMotion = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) || document.documentElement.classList.contains('m-reduce');
   const isDesk = () => !!(window.matchMedia && window.matchMedia('(min-width: 1024px)').matches);
   function avatar(kind, size) {
     const s = document.createElement('span');
@@ -2538,11 +2538,14 @@ textarea:disabled { opacity: .6; }
     };
     const c = BY_ID[currentId] && BY_ID[currentId].chapters[viewCh - 1];
     whenSceneFont(c ? c.scene.join(' ') : '').then(go);
-    const behavior = reduceMotion() ? 'auto' : 'smooth';
+    /* a run of more than 1.5 screens jumps: pages of text streaming past read as the whole screen moving */
+    const far = d => d > 1.5 * window.innerHeight;
+    const smooth = reduceMotion() ? 'auto' : 'smooth';
     if (isDesk()) {
+      const behavior = far($('col-left').scrollTop) ? 'auto' : smooth;
       try { $('col-left').scrollTo({ top: 0, behavior }); } catch (e) { $('col-left').scrollTop = 0; }
     } else if (fromButton) {
-      prob.scrollIntoView({ block: 'start', behavior });
+      prob.scrollIntoView({ block: 'start', behavior: far(Math.abs(prob.getBoundingClientRect().top)) ? 'auto' : smooth });
     }
     if (fromButton) $('ch-title').focus({ preventScroll: true });
   }
@@ -2561,24 +2564,14 @@ textarea:disabled { opacity: .6; }
     if (freshLast && log.lastElementChild) {
       const last = log.lastElementChild;
       last.classList.add('fresh');
-      morphFromTyping(last);
       scrollToEntry(last);
     }
   }
-  /* typing bubble → answer bubble: grow from the typing bubble's size */
-  function morphFromTyping(li) {
-    const b = li.querySelector('.reply-bubble');
-    if (!b || reduceMotion() || typeof b.animate !== 'function') return;
-    const w = b.offsetWidth, ht = b.offsetHeight;
-    if (!w || !ht) return;
-    try {
-      b.animate([{ width: '68px', height: '44px', overflow: 'hidden' }, { width: `${w}px`, height: `${ht}px`, overflow: 'hidden' }],
-        { duration: 240, easing: 'cubic-bezier(.4,0,.2,1)' });
-    } catch (e) { /* no WAAPI */ }
-  }
   function scrollToEntry(el) {
     const reduce = reduceMotion();
-    try { el.scrollIntoView({ block: el.classList.contains('entry-chapter') ? 'start' : 'nearest', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) { /* older browsers */ }
+    /* a run of more than 1.5 screens jumps (as in turnPage): the whole scene streaming past reads as the screen moving */
+    const far = Math.abs(el.getBoundingClientRect().top) > 1.5 * window.innerHeight;
+    try { el.scrollIntoView({ block: el.classList.contains('entry-chapter') ? 'start' : 'nearest', behavior: reduce || far ? 'auto' : 'smooth' }); } catch (e) { /* older browsers */ }
   }
 
   let goalMemo = { key: '', got: -1 };
@@ -2968,5 +2961,6 @@ textarea:disabled { opacity: .6; }
 })();
 </script>
 <script src="/music.js" defer></script>
+<script src="/motion.js" defer></script>
 </body>
 </html>

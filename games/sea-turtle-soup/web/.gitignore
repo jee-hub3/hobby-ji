@@ -8,3 +8,5 @@ test/.out-budget/
 music-out/
 test/.out-music/
 __pycache__/
+motion-out/
+test/.out-motion/
